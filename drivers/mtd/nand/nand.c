@@ -32,7 +32,7 @@
 #endif
 
 int nand_curr_device = -1;
-nand_info_t nand_info[CFG_MAX_NAND_DEVICE];
+nand_info_t nand_info[CFG_MAX_NAND_DEVICE] = {{0}};
 
 static struct nand_chip nand_chip[CFG_MAX_NAND_DEVICE];
 static ulong base_address[CFG_MAX_NAND_DEVICE] = CFG_NAND_BASE_LIST;
@@ -70,7 +70,7 @@ void nand_init(void)
 		if (nand_curr_device == -1)
 			nand_curr_device = i;
 	}
-	printf("%lu MiB\n", size / (1024 * 1024));
+	print_size (size, "\n");
 
 #ifdef CFG_NAND_SELECT_DEVICE
 	/*

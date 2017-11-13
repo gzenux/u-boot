@@ -392,14 +392,14 @@ int do_mem_cp ( cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	   ) {
 		int rc;
 
-		puts ("Copy to Flash... ");
+		puts ("Copy to Flash\n");
 
 		rc = flash_write ((char *)addr, dest, count*size);
 		if (rc != 0) {
 			flash_perror (rc);
 			return (1);
 		}
-		puts ("done\n");
+		puts (" done\n");
 		return 0;
 	}
 #endif
@@ -710,8 +710,9 @@ int do_mem_mtest (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 		pattern = 0;
 	}
 
+	printf ("Testing %08lx ... %08lx  (", (ulong)start, (ulong)end);
+	print_size ( (ulong)end - (ulong)start, "):\n" );
 #if defined(CFG_ALT_MEMTEST)
-	printf ("Testing %08x ... %08x:\n", (uint)start, (uint)end);
 	PRINTF("%s:%d: start 0x%p end 0x%p\n",
 		__FUNCTION__, __LINE__, start, end);
 

@@ -242,6 +242,11 @@ void	forceenv     (char *, char *);
 # include <asm/setup.h>
 # include <asm/u-boot-arm.h>	/* ARM version to be fixed! */
 #endif /* CONFIG_ARM */
+
+#ifdef CONFIG_STM_ST231
+# include <asm/setup.h>
+#endif /* CONFIG_STM_ST231 */
+
 #ifdef CONFIG_I386		/* x86 version to be fixed! */
 # include <asm/u-boot-i386.h>
 #endif /* CONFIG_I386 */
@@ -578,6 +583,7 @@ void	wait_ticks    (unsigned long);
 
 /* lib_$(ARCH)/time.c */
 void	udelay	      (unsigned long);
+void	ndelay        (unsigned long nsec);
 ulong	usec2ticks    (unsigned long usec);
 ulong	ticks2usec    (unsigned long ticks);
 int	init_timebase (void);

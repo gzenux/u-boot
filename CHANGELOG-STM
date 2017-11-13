@@ -1,0 +1,555 @@
+#
+#  CHANGELOG
+#
+
+* Fri Oct  2 2009 Chris Smith <chris.smith@st.com> 45
+- [Add patch: u-boot-1.3.1_stm23_0045.patch]
+- Rebase on git tag stm23_45, see git repository for more details.
+
+* Mon Aug 10 2009 Chris Smith <chris.smith@st.com> 44
+- [Add patch: u-boot-1.3.1_stm23_0044.patch]
+- Rebase on git tag stm23_44, see git repository for more details.
+
+* Thu May 21 2009 Chris Smith <chris.smith@st.com> 43
+- [Add patch: u-boot-1.3.1_stm23_0043.patch]
+- Rebase on git tag stm23_43, see git repository for more details.
+
+* Tue Oct 14 2008 Sean McGoogan <Sean.McGoogan@st.com> 42
+- [Add patch: u-boot-1.3.1_stm23_0038-20081014.patch.gz; Bugzilla: 4465; Bugzilla: 4624; Bugzilla: 4726; Bugzilla: 4806; Bugzilla: 4828]
+- Added support for the MB680 (STx7105) board.
+  This includes support for the new SoC on the MB680 board, as well
+  as the following blocks: Serial (ASC), NOR Flash, NAND Flash, USB
+  (OHCI), and ST-GMAC + NS DP83865 PHY.  The following are not supported:
+  Serial Flash (SPI), PCI, SATA, EHCI, or any of the other blocks that
+  STMicroelectronics does not support in U-boot.
+- Added phase I support for STMicroelectronics' MB628 (STx7141)
+  This update provides initial (Phase I only) support for the MB628
+  board, which uses STMicroelectronics' STx7141 SoC device. Phase II
+  will be provided later.
+- Include support for latest EPLD revisions on MB618 (STx7111) boards.
+  The STMicroelectronics' MB618 (STx7111) board has undergone several EPLD
+  revisions in the firmware, and the previous version of U-Boot became
+  incompatible with the newer versions.
+  This update now supports version 06 (and later) of the EPLD firmware. As
+  a result of this change, all versions of the firmware prior to version
+  06 (specifically 04 and 05) are no longer supported.  Boards with
+  earlier versions of the supported firmware must upgrade to a later
+  version to use this patch to U-boot.
+  A new configuration macro "CONFIG_SH_NO_EPLD" now exists, which can be
+  used to instruct U-Boot to disregard the presence of a EPLD.  This is
+  useful for clones of the MB618, which do *not* have a EPLD.
+- Ensure Caches are always in Copy-Back mode (CCR.CB==1)
+  Prior to this fix, then the following was used: CCR.CB==CCR.WT==0.
+  That is, P0 and P3 are in Copy-Back, but P1 was in Write-Through mode.
+  However, Write-Through was effectively only enabled in P1 in 29-bit
+  mode. In 32-bit mode, the PMB[x].WT==0 dominates, ensuring that we
+  were actually in Copy-Back mode in 32-bit mode.
+  This update, will set: CCR.CB==1, CCR.WT==0, PMB[x].WT==0.  This will
+  always put all cached accesses (P0, P1 and P3) into Copy-Back mode,
+  in both 29-bit, and 32-bit modes.
+- Added a "progress indicator" when writing to NOR flash devices.
+  Modified the flash routines to print a dot (".") character for
+  every 16 KiB of data written to NOR flash, as a progress indicator.
+  This modification also tidied up some of the diagnostics, to make them
+  more consistent, e.g. the use of ellipsis ("...") and "done" strings.
+- Improvements to the "bdinfo" command's output for SH boards.
+  Tidied up the output from the "bdinfo" command for boards with SH
+  devices on them. The code is now structured better; duplicated code
+  was removed; and the field width of the various reported parameters
+  are now all consistent.
+- First attempt at using the new binary prefixes: Ki, Mi, Gi
+  This is a first attempt at modifying U-boot to use exclusively the IEC
+  recommended binary (2^10) prefixes (e.g. "Ki", "Mi", "Gi"), instead
+  of the disapproved SI decimal (10^3) prefixes (e.g. "k", "M", "G"),
+  for measuring units of computer memory, disk space, etc.
+  This is recommended by the addendum to IEC 60027-2, and the IEEE
+  1541-2002 standards.  The traditional SI prefixes should now only have
+  a base-10 meaning, and not have any base-2 meaning.
+  This modification has been aimed primarily at the SH architecture, and
+  all the relevant SH files have been changed appropriately. In addition,
+  most architecture agnostic source files have also been modified. As
+  a result, all code normally built on SH should now exclusively use
+  the appropriate prefixes correctly.
+- Print out the OUI with a field width of 6 (was 4)
+  The OUI is a 24-bit value, and so it requires a maximum of 6 character
+  positions to print it in hex. Previously it was only 4 character
+  positions. PHYs which have any bits set in the top octet resulted
+  in the output of the "mii info" command being unaligned. This update
+  fixes that annoyance.
+- Bug fix to include/asm-sh/st40reg.h (ST40_EMI_BANK_ENABLE)
+  Fixed a bug that the register offset for ST40_EMI_BANK_ENABLE was
+  incorrect.  Instead, an unused macro ST40_EMI_BANKNUMBER had this offset,
+  and this (unused macro) has now been removed.
+  This bug was originally reported in STMicroelectronics' bare-machine
+  tool-set as DDTS #INSbl28111.
+  This bug fix is required with boards that need to disable some of the
+  EMI banks, due to a lot of NOR flash being present on the board.
+- Bug-fix and refactoring of the (STM) ASC serial driver
+  This update is a refactoring of the drivers/serial/stm-asc.c ASC driver
+  file for the UART used by STMicroelectronics. This was primarily to
+  address some confusion/misdirection over the accuracy of the comments,
+  which had been reported a few times.  As a result, the comments are
+  now correct, and there is a comment for each function, which should
+  significantly address the maintainability of the file.
+  As a result of the tidying up, some functions have been deleted, and
+  (in some cases) recreated in a different guise, further improving the
+  readability and maintainability of the driver.
+  Code has been commented out, removing the support for the
+  anachronistically slower baud rates (below 9600). If required, it can
+  be re-enabled!
+  Finally, a bug was fixed which had previously resulted in baud rates
+  slower than 19200 being mis-configured with the wrong baud rate divisor.
+  This has now been fixed, and all supported baud rates have been tested.
+  The baud rates now supported are: 9600, 19200, 38400, 57600, 115200.
+- Added test code to put the PHY into loopback mode.
+  Added conditionally compiled code, such that if CONFIG_PHY_LOOPBACK
+  is defined, then stm-stmac.c will put the external PHY in loop-back
+  mode, for testing purposes. In addition, for all TX and RX packets,
+  the frame header will be dumped, to facilitate easier debugging.
+
+* Mon Sep 29 2008 Melwyn Lobo <melwyn.lobo@st.com> 41
+- [Add patch: u-boot-1.3.1_nmdk_008-ethernet-on-ndk20.patch]
+  Fixed bug for ethernet board on ndk20.
+
+* Fri Sep 26 2008 Melwyn Lobo <melwyn.lobo@st.com> 40
+- [Add patch: u-boot-1.3.1_nmdk_007-ifdef-removed.patch]
+  Added support for ethernet over usb for Davicom DM9601 dongle chip.
+  Fixed bugs for fifo reads, writes in bulk message transfers.
+- [Add patch: u-boot-1.3.1_nmdk_006-davicom-usb-ethernet-support.patch]
+  Added support for ethernet over usb for Davicom DM9601 dongle chip.
+  Fixed bugs for fifo reads, writes in bulk message transfers.
+
+* Tue Aug 26 2008 Kumar Bipin <kumar.bipin@st.com> 39
+- [Add patch: u-boot-1.3.1_nmdk_002-yaffs2-onenand.patch]
+  Added yaffs2 support.
+- [Add patch: u-boot-1.3.1_nmdk_003-fastboot.patch]
+  Added hw ecc and burst read for nand & onenand.
+- [Add patch: u-boot-1.3.1_nmdk_004-ethernet.patch]
+  Added ethernet support on ndk20.
+- [Add patch: u-boot-1.3.1_nmdk_005-usb.patch]
+  Added usb minimal support on ndk20.
+
+* Fri Aug 01 2008 Sean McGoogan <Sean.McGoogan@st.com> 38
+- [Add patch: u-boot-1.3.1_stm23_0036-20080801.patch.gz; Bugzilla: 4102; Bugzilla: 4173]
+- Support for the following two new boards: MB671 and CB102.
+  Both these boards uses STMicroelectronics' STx7200 chip.  This update
+  includes testing on both 29-bit and 32-bit (SE) modes.
+- Added support for all 256MB of LMI0 RAM (on MB671+CB102) in SE-mode.
+  The new MB671+CB102 boards have 256MB of memory in LMI0.  This update
+  has refactored the PMB code, such that there are now two contiguous
+  128MB PMB entries (instead of just the one) to map the entire 256MB
+  of LMI0 memory.  As a result, U-boot will now be located at 0x8FF00000
+  on boards with 256MB in LMI0 in SE mode.
+  The PMB refactoring has resulted in the following significant changes:
+  <p>PMB[0:1] is used to map main memory, and will mostly be used as
+  cached, except on initialization, and when passing control to the
+  linux kernel, where it will be un-cached.
+  <p>PMB[2:3] is an alias for PMB[0:1], except it is guaranteed to
+  always be UN-cached. This is required in order that we can safely
+  toggle the cacheability of PMB[0:1].
+  <p>PMB[0:1]  will map VA 0x80000000 .. 0x8fffffff.  (256MB)
+  <p>PMB[2:3]  will map VA 0x90000000 .. 0x9fffffff.  (256MB)
+  <p>PMB[4:15] will map VA 0xa0000000 .. 0xbfffffff.  (512MB)
+  <p>If sizeof(LMI) <= 128MB, then PMB[1] and PMB[3] are unused,
+  i.e. PMB[1].V == PMB[3].V == 0.
+  see include/asm-sh/pmb.h for further details.
+- A new U-boot command "pmb" has been added.
+  This new command, which when run, will display the state of all the
+  currently valid PMB entries, in SE-mode. When compiled with the macro
+  DEBUG defined, it will also verify adherence to the aforementioned
+  refactoring requirements of the PMB.
+- Fix incorrect probing of AMD (compatible) CFI flash devices.
+  Prior to this fix, CFI flash, compatible with the AMD command set,
+  may be miss-probed, and wrongly identified. This changes addresses
+  this issue.  Both INTEL and AMD compatible CFI flash devices should
+  now be correctly identified.
+  For further details, please see:
+  https://bugzilla.stlinux.com/show_bug.cgi?id=4102
+- Added support for latest revisions of SMSC LAN8700 devices.
+  The stm-stmac.c driver has been updated to be tolerant of minor
+  revision changes in the PHYID register for both the SMSC LAN8700
+  and the STMicroelectronics STe101p.
+- Bug fix: added 2 NOP instructions to cpu/sh/start.S
+  Added a couple of NOP instructions, to workaround the
+  problem reported in the following bugzilla report:
+  https://bugzilla.stlinux.com/show_bug.cgi?id=4173
+- Pad printed memory sizes with a field width of 3.
+  The function print_size() will now pad memory sizes to a field width of 3
+  (it was 2). This is required as a lot of boards now have > 99MB of RAM
+  on them, and the vertical alignments were inconsistent, when displaying
+  the capacity for a board with a lot of RAM, but a small amount of flash.
+- Improved debugging of cpu/sh/start.S.
+  Some additional descriptive symbols are now defined in cpu/sh/start.S,
+  which should facilitate easier debugging of this file.
+- Linux Kernel compatibility checking
+  Fixed a minor bug in lib_sh/sh_linux.c, whereby the wrong mode was
+  reported for both linux & U-boot, if the kernel was inappropriate.
+- Numerous minor changes.
+
+* Mon Jul 14 2008 Vinayak Pane <vinayak.pane@st.com> 37
+- [Add patch: u-boot-1.3.1_nmdk_001-ethernet.patch]
+  Added support for ethernet on ndk20 board. Modified CFG_ENV_OFFSET.
+
+* Tue Jun 10 2008 Sean McGoogan <Sean.McGoogan@st.com> 36
+- [Add patch: u-boot-1.3.1_stm23_0034-20080610.patch.gz; Bugzilla: 3665]
+- Added support for the MB618 (STx7111) MBoard.
+  This update includes support for serial, GMAC, USB, NAND & NOR flashes.
+  It has been tested on both 29-bit and 32-bit (SE) modes; both from GDB
+  and booting from NOR-flash.
+  It should be noted that the MB618 supports both NOR and NAND
+  flashes. However, only one may be visible any any one point. Hence,
+  it is necessary to re-configure and re-build U-boot, to swap between
+  NAND/NOR flash devices.
+- This is the first update that includes support for the new SH4-300
+  series family of CPU cores.
+- Ensure MMU coherency (with RTE) on SE mode-switching
+  Previously the code executed 8 NOP instructions, immediately after
+  entering 32-bit mode (SE=1).  However, this is not architecturally
+  guaranteed (on SH4-300 series cores). Executing an RTE instruction
+  instead, is guaranteed to preserve the MMU coherency, on all SH cores.
+  This update, replaces the eight NOPs, with an RTE instruction, to
+  ensure the MMU coherency, when mode-switching, in all cases.
+- Use the on-chip Watchdog to effect a (power-on) reset.
+  Prior to this change, the "reset" command was implemented by setting
+  SR.BL=1, and issuing a TRAPA instruction.  This update is to use
+  the on-chip watchdog timer instead, to effect a power-on-reset. All
+  "reset" commands for the SH family, will now use the watchdog as
+  the reset mechanism.  As a result of this change, the chip-specific
+  st?7???_reset() functions have been all been replaced by a single
+  sh_reset() function, which now resides in lib_sh/board.c.
+- Enable cachable address for NOR FLASH in 32-bit (SE) mode.
+  In 32-bit (SE-mode) added cached aliases for NOR FLASH (in addition
+  to the uncached) mappings. The memory map for NOR FLASH is now:
+  	Physical:	0x00000000
+  	UN-cached:	0xA0000000
+  	Cached	:	0xA8000000
+  Thus, one can program NOR flash using uncached addresses, and Boot
+  using cached addresses.
+- Bug fix for CFI FLASH devices.
+  Recent reliability improvement patches for CFI FLASH, in particular for
+  multi-bank devices, appeared to unintentionally break uni-bank FLASH
+  devices. This patch corrects this problem.  In particular it ensures
+  that CFI mode is enabled when required, and will use the correct RESET
+  command code when required.
+- Several minor changes to other files (mostly configuration) have
+  been made.  These were just to keep the code as "unified" as possible.
+
+* Wed May 14 2008 Sachin Verma <sachin.verma@st.com> 35
+- [Add patch: u-boot-1.3.1_nmdk.patch] 
+  U-boot updated for Nomadik. Added Support for 8820 board, and boot 
+  from MMC, OneNand.
+
+* Mon Apr  7 2008 Carl Shaw <carl.shaw@st.com> 34
+- [Add patch: u-boot-1.3.1-stmmac_fix.patch] 
+  fix MDIO bus write function
+
+* Tue Apr  1 2008 Carl Shaw <carl.shaw@st.com> 33
+- [Add patch: u-boot-1.3.1-sha1-header-fix.patch]
+  Change sha1.c which is shared between host and target so that during
+  the host tools phase it does not use asm-sh/string.h if the host
+  system does not have /usr/include/linux/string.h
+
+* Tue Mar 25 2008 Sean McGoogan <Sean.McGoogan@st.com> 32
+- [Update: 1.3.1] Updated to version 1.3.1 for ST40
+- [Add patch: u-boot-1.3.1-stm-20080319.patch.gz; Bugzilla: 3665]
+- Add support for the CB101 board. The CB101 board is now supported. This
+  has been tested (modulo SATA) on both 29-bit and 32-bit systems.
+- USB now works on both STb710x and STi7200 chips.  Added support for
+  USB Mass-Storage for the STi7200 chip. It should be noted that although
+  the STi7200 supports three USB Host Controllers, that only one may be
+  used. This is a current restriction of the generic U-boot sources, and
+  not the SH port.  Also tidied up the initialisation of USB (and SATA).
+  USB mass storage tested, on both 29-bit and 32-bit systems.
+- Added initial support for NAND FLASH on the ST40 Silicon.  Added
+  initial support added for NAND FLASH for the CB101 board with the
+  STx7200 silicon from STMicroelectronics. This has been tested for
+  both 29-bit and 32-bit environments, but only on the CB101, with both
+  (on-board) NAND chips.  Testing included using the JFFS2 file-system,
+  and the "mtdparts" environment variable to define partitions for
+  both NAND and NOR partitions.  Performance of this initial version is
+  sub-optimal. This version takes no advantage of the caches that are
+  available on the SuperH architecture.
+- Fix a putative DataToggle Error whilst performing BULK transfers.
+  There was a subtle bug with the way that the OHCI data toggle carry
+  bitfields were managed. It was possible for the HC and the remote
+  device to get out of step with the data toggle values, due to the fact
+  that the ED structures were re-used, without saving and restoring the
+  ED.C bitfield across this re-use.  This problem was only observed when
+  there were multiple (strictly greater than one) BOT USB Mass-Storage
+  devices present on the system. The system would sometimes hang, and
+  report timeouts. Simply adding or removing a device, or exchanging
+  the positions on the bus of two devices could invert the behaviour. It
+  initially looked like a random instability.  Due to the fact that only
+  a statically defined small number (eight) ED structures were available
+  to the HCD to manage all the devices, the EDs were regularly re-used, if
+  multiple devices were present. This resulted in the ED.C (toggleCarry)
+  bitfield potentially losing its value between two consecutive BULK
+  accesses to a single device, if the ED structure was temporarily
+  re-used to communicate with a different device. The following simple
+  command sequence was enough to provoke it: "usb reset;usb part". This
+  modification saves the ED.C bitfield in the usb_device structure, after
+  each transaction. It will then invert the hardware visible ED.C for new
+  BULK transfers, if a DataToggle error would have otherwise resulted.
+  It should be noted that CONTROL transfers were immune from this problem.
+- Fix to CFI flash, to support multi-bank devices better.  Fixed a
+  problem that occurs with multi-bank devices, whereby, a sector was
+  in the wrong mode, and the wrong data was accessed. Now explicit
+  calls are made to ensure the sector is in the correct mode prior
+  to accessing it.  This should address some of the inconsistencies,
+  and reliability issues that were sometimes observed with NOR FLASH
+  devices, especially with multi-bank devices.  Without this fix, the
+  "protection" status information for a given sector was indeterminate.
+- Minor change, so that if/when CFG_MONITOR_LEN changes in the
+  configuration file, then $monitor_sec and CFG_ENV_OFFSET will
+  automatically track, accordingly. Thus, it should be easier to change
+  correctly.
+- By default, CB101 and HMS1 now default to allocating 256kB for the
+  monitor (2 sectors), with the remaining boards allocating only 128kB
+  (1 sector). Typically, enabling USB will require 2 sectors.
+- Enabled CFG_FLASH_EMPTY_INFO for all STMicroelectronics boards.
+  This useful feature is now enabled, by default, for all supported
+  boards from STMicroelectronics. Note the "flinfo" command will be
+  slower as a result.
+- Experimental Performance improvement for OHCI USB.  Uncommenting the
+  following line will remove some delays in the USB sub-system. However,
+  it is possible that some of these removed delays may be actually
+  necessary on some hardware devices.  So, although this gives a
+  useful performance improvement, it does so at the potential risk of
+  reliability and stability.  This should be considered as an experiential
+  configuration, and not at all recommended for production or deployment
+  code, unless it has been thoroughly tested for your specific hardware.
+  Enabling this optimisation makes some assumptions, that may be totally
+  without any foundation.  If reliability or stability becomes an issue,
+  then please disable this configuration option, as a first step.
+  Use it at your own peril - strictly caveat emptor!
+	#define CONFIG_USB_AGGRESSIVE_MINIMAL_DELAYS
+- Ensure that LBA48 is used on both PATA and SATA by default. Also, ensure
+  that LBA's are stored in a 64-bit value (fixes compiler warnings).
+- Changed default IDE device from PATA to SATA on most boards.
+- The list of currently supported boards are:
+	mb411, mb442, mb448, mb519, hms1 and cb101.
+
+* Tue Mar 11 2008 Sachin Verma <sachin.verma@st.com> 31
+- [Add patch: nomadik-u-boot-8815-header_fix.patch]
+  Removed ST proprietary headers
+
+* Tue Mar 04 2008 David McKay <david.mckay@st.com> 30
+- [Add patch: nomadik-u-boot-8815-cmd_edit.patch]
+  Add command line editing
+- [Spec] Added release number to version string. 
+  Delete unused %%st_version macro
+  Added symbolic link to sources
+
+* Tue Feb  26 2008 Sachin Verma <sachin.verma@st.com> 29
+- [Add patch: nomadik-u-boot-8815-saveenv.patch]
+  Added saveenv functionality for ndk15 boards
+
+* Wed Feb  20 2008 Sachin Verma <sachin.verma@st.com> 28
+- [Update: 1.3.1] Updated to new version of u-boot.
+- [Add patch: nomadik-u-boot-v2.3beta-1.3.1.patch]
+  Support's NDK15 boards only
+- Support for NDK10 boards has been dropped
+
+* Fri Dec  7 2007 Sean McGoogan <Sean.McGoogan@st.com> 27
+- [Add patch: u-boot-1.2.0_stm23_0026_pmb_invalidate_fix_for_stb7109.patch]
+  Bug Fix: Can now correctly boot 32-bit kernels on the STb7109.
+
+* Thu Nov 22 2007 Sean McGoogan <Sean.McGoogan@st.com> 26
+- [Update: 1.2.0] Rebaselined to latest offical version of U-boot.
+- [Add patch: u-boot-1.2.0-stm-20071122.patch.gz]
+- Now supports both traditonal (29-bit) and the new Space Enhanced
+  (32-bit, or SE) addressing modes.
+- Most of the make target have been re-named, please read the top-level
+  "Makefile" for the new configuration names to use.
+- Older ST40-100 series CPU cores are no longer supported.
+- The list of currently supported boards are:
+  	mb411, mb442, mb448, and mb519.
+- Note the architecture has changed from "sh4" to "sh", so "-a=sh"
+  should be used for mkimage. Also, old ".ub" files need to be re-built
+  with tools/mkimage to be compatable with this release.
+
+* Wed Nov 14 2007 Stuart Menefy <stuart.menefy@st.com> 25
+- [Add patch: u-boot-mb519_7200_rel2.0.0-lmi-bandwidth.patch]
+  Updated settings for the mb519 LMI registers.
+
+* Thu Sep 24 2007 Stuart Menefy <stuart.menefy@st.com> 24
+- [Spec] Added architecture to package name so that we can have
+  different versions for different architectures co-exist. Note that
+  we need to use %%_stm_target_name instead of %%_stm_target_arch
+  otherwise we end up with different source packages for glibc/uclibc
+  builds. This also requires the arch name be added to the top level
+  U-Boot directory name.
+
+* Fri Sep 07 2007 Carl Shaw <carl.shaw@st.com> 23
+- [Add patch: u-boot-1.1.2_st2.0_0019-stx7200-mb519.patch]
+  Add support for MB519
+- [Add patch: u-boot-1.1.2_st2.0_0019-stx7200-mb519-both-macs.patch]
+  Add support for both on-board MACS and SMSC LAN8700 support
+
+* Thu Aug 30 2007 Carl Shaw <carl.shaw@st.com> 23 
+- [Add patch: u-boot-1.1.2_st2.0_0019-hms1_128m.patch]
+  Add 128M support for the HMS1 board
+
+* Wed Aug 29 2007 Angelo Castello <angelo.castello@st.com> 23
+- [Spec] Added flash individual block locking support.
+
+* Wed Aug  1 2007 Carl Shaw <carl.shaw@st.com> 23
+- [Spec] Use if_target_arch conditional
+
+* Thu Jul 19 2007 Giuseppe Cavallaro <peppe.cavallaro@st.com> 23
+- [Spec] ported on uClibc build system.
+
+* Thu Jul 19 2007 Angelo Castello <angelo.castello@st.com> 22
+- [Add patch: u-boot-1.1.2_stm23ear_0020_multiple_bank.patch Bugzilla: 1774; 
+  Bugzilla: 1494] Support for flash multiple bank memory layout. Back compatible with
+  flash sigle bank.
+* Mon Jul 9 2007 Sachin Verma <sachin.verma@st.com> 21
+- [Add patch: nomadik-u-boot-v2.3alpha-1.1.5.patch]
+  Updated for latest ARM nomadik patch.
+
+* Mon May 14 2007 Stuart Menefy <stuart.menefy@st.com> 20
+- [Add patch: u-boot-1.1.2_st2.0_0019-stb7100ref-128m.patch; Bugzilla: 1763; Bugzilla: 1845]
+  Support for STB7100ref with 128M LMI SYS.
+
+* Mon May 14 2007 Stuart Menefy <stuart.menefy@st.com> 19
+- [Add patch: u-boot-1.1.2_st2.0_0017-hms1.patch] Basic HMS1 board support
+- [Add patch: u-boot-1.1.2_st2.0_0017-stm-sata-7109c3.patch; Bugzilla: 1370]
+  Fix detection of 7109c3 so that SATA works.
+- [Add patch: u-boot-1.1.2_st2.0_0017-hms1-7109c3-emi.patch; Bugzilla: 1580]
+  Update EMI settings for 7109c3 on HMS1.  
+
+* Fri Feb 16 2007 David McKay <david.mckay@st.com> 18
+- [Update: 1.1.5] Added in ARM nomadik support 
+
+* Sat Oct 14 2006 Stuart Menefy <stuart.menefy@st.com> 17
+- Updated for 2.2 distribution with new build number style version,
+  which allows removal of release from external names. Also
+  renamed to u-boot-source and removed arch from name.
+
+* Wed Aug 30 2006 Stuart Menefy <stuart.menefy@st.com> 17
+- Added u-boot-1.1.2_st2.0-14-remove_coprocessor_mem.patch
+
+* Wed Aug 30 2006 Stuart Menefy <stuart.menefy@st.com> 16
+- Added requirement for host-filesystem package
+
+* Mon Aug 28 2006 David McKay <david.mckay@st.com>
+- Applied patch to fix problems with make 3.81
+
+* Fri Aug 18 2006 Carl Shaw <carl.shaw@st.com> 15
+- Added patch u-boot-stlinux-2.0.piofix.patch from Bugzilla 795
+
+* Wed Aug 16 2006 Carl Shaw <carl.shaw@st.com> 15
+- Updated to latest ST version
+- Added gcc4 build fixes
+- Incremented release number to 15
+
+* Fri May 19 2006 Andy Sturges <andy.sturges@st.com>
+- New features:
+-  support stb7109 cut2 silicon
+- Bug fixes:
+-  stb7100 cut 3.xand stb7109 cut2 run PLL1 at 400MHz
+-  cfi flash driver hw protect code modified to reduce protect cycles used
+-  unaligned access in itest function fixed
+-  u-boot-stlinux-2.0-stb7100refcut31.patch merged into main patchfile
+
+* Wed Mar 29 2006 Stuart Menefy <stuart.menefy@st.com>
+- Added u-boot-stlinux-2.0-stb7100refcut31.patch
+
+* Fri Mar 10 2006 Andy Sturges <andy.sturges@st.com>
+- New features:
+-  support cut stb7100 cut3.1 silicon
+-  added tools for accessing/chaning u-boot environment from target Linux system (see STM/ev)
+-  added some examples for updating u-boot from u-boot and kernel from Linux system
+-  add CONFIG_ZERO_BOOTDELAY_CHECK incase bootdelay is set to 0
+- Boards added 
+-  stb7109eref
+- Bug fix
+-  itest.l producing incorrect result
+-  stb7100mboard: monitor_base was set to FLASH_BASE in default config 
+-  traviata: fix monitor_sec in default environment
+-  flash write is disabled before calling Linux kernel
+
+* Fri Dec 14 2005 Andy Sturges <andy.sturges@st.com>
+- rename setupenv as localenv
+- Fix mkenv for stb7100
+- Fix for kscript to add uversion
+
+* Fri Dec 9 2005 Andy Sturges <andy.sturges@st.com>
+- New features:
+-  Command line history/editing
+- Boards added 
+-   traviata
+_ New config targets to configure options:
+-   stb7100ref_27_config
+-   stb7100ref_30_config
+- stb710x based boards (stb7100mboard, stb7100ref) now detect chip version and 
+  configure memory system as required.  No longer necessary to change config file.
+- Added STM script directory with:
+-   builduboot          for building uboot binaries for all variants
+-   buildenv/mkenv      for creating standard env for downloading to board
+-   buildlinux/mklinux  for creating u-boot images from linux kernels 
+-   kscript             kermit script for supporting initialisation of boards
+-     setupub           shell wrapper for doing a initial serial setup of u-boot on a board
+-     netsetupub        shell wrapper for doing a network setup of u-boot on a board
+- Added disk support to stm8010mboard
+- Other updates:
+-  Increased CFG_CBSIZE to 1024 for all targets (longer command lines)
+-  Updated memory configs for sh4 targets inline with .cmd files on web
+-  Fixed booting from flash for sti5301 targets (got broken in last release)
+-  sti5528 targets now get clock info from config register
+-  Examples directory now builds correctly for SH4 targets i.e. now support u-boot apps
+-  st220eval default serial output is now com0 
+-  Added better error handling to lost udp packets for NFS
+
+* Fri Oct 7 2005 Andy Sturges <andy.sturges@st.com>
+- Added stb7100ref
+- Fixed stb7100 cut2 emi ethernet problems
+
+* Thu Sep 29 2005 Andy Sturges <andy.sturges@st.com>
+- More tidying of config files
+- Changes for stb7100mboard:
+--  Added support for stb7100 cut 1.3, cut 2.0 and stx7109 cut 1.0  
+--  Added ide disk boot: EMI & SATA
+--  bdinfo displays clock settings for stb7100mboard
+--  baudrate calculation uses clock setting read from config regs
+- Changes to espresso & st220eval:
+--  Added ide disk boot
+
+* Fri Sep 16 2005 Carl Shaw <carl.shaw@st.com>
+- Changed installation directory
+
+* Fri Sep 9 2005 Andy Sturges <andy.sturges@st.com>
+- Updated patch:
+-- Added stm8010mboard target
+-- small fix for 911x autoconf timeout
+-- added STEM ethernet support to stb7100mboard
+* Thu Aug 11 2005 Andy Sturges <andy.sturges@st.com>
+- Updated patch:
+-- Fix st220eval config file for failing writing to flash and flash organisation
+-- re-apply TMU fix which got lost in last release
+-- Tidy stb7100mboard config file for flash organisation.
+-- Tidy sti5301mb390 config file for flash organisation  (puts env at 1st sector - same as mb424)
+-- Tidy st40rastarter flash config flash organisation (reduces size of binary image)
+-- remove unused memory configs from sti5301mb390 & sti5301mb424
+
+* Fri Jul 15 2005 Andy Sturges <andy.sturges@st.com>
+- Updated patch:
+-- Added smc911x ethernet driver, enabled in sti5301mb424
+-- updated memory configs for mb390 and mb424 to the standard clocking
+-- trap handler for sti5301 causes reset.
+ 
+* Mon Jul 11 2005 Andy Sturges <andy.sturges@st.com>
+- Updated patch:
+-- fixes problems with using RTC clock as input to TMU for SH4-1xx platforms as
+-  causing flash write problems.
+-- Updated cfi_flash driver.
+-- Fixes various config header file issues.
+-- Adds command line support for ST200 platforms. 
+-- Changed default uart port for MB390 to be uart0.
+
+* Mon Jun  6 2005 Carl Shaw <carl.shaw@st.com>
+- Automatically removed dependency opt-out line and removed binaries in the source
+- tree as they made the package uninstallable
+
+* Mon May 23 2005 Stuart Menefy <stuart.menefy@st.com>
+- First version
