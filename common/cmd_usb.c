@@ -456,6 +456,7 @@ int do_usb (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 		sh_disable_data_caches();
 		usb_stop();
 		printf("(Re)start USB...\n");
+		//udelay(10000000);
 		i = usb_init();
 #ifdef CONFIG_USB_STORAGE
 		/* try to recognize storage devices immediately */

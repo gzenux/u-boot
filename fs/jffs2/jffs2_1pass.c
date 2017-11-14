@@ -169,12 +169,14 @@ int read_jffs2_nand(size_t start, size_t len,
 extern nand_info_t nand_info[];
 #endif
 
-#define NAND_PAGE_SIZE 512
+//#define NAND_PAGE_SIZE 512
+#define NAND_PAGE_SIZE 2048
 #define NAND_PAGE_SHIFT 9
 #define NAND_PAGE_MASK (~(NAND_PAGE_SIZE-1))
 
 #ifndef NAND_CACHE_PAGES
 #define NAND_CACHE_PAGES 16
+//#define NAND_CACHE_PAGES 4
 #endif
 #define NAND_CACHE_SIZE (NAND_CACHE_PAGES*NAND_PAGE_SIZE)
 
@@ -185,6 +187,7 @@ static int read_nand_cached(u32 off, u32 size, u_char *buf)
 {
 	struct mtdids *id = current_part->dev->id;
 	u32 bytes_read = 0;
+	int ReadOK = -1;
 #if defined(CFG_NAND_LEGACY)
 	size_t retlen;
 #else
@@ -211,17 +214,16 @@ static int read_nand_cached(u32 off, u32 size, u_char *buf)
 			if (read_jffs2_nand(nand_cache_off, NAND_CACHE_SIZE,
 						&retlen, nand_cache, id->num) < 0 ||
 					retlen != NAND_CACHE_SIZE) {
-				printf("read_nand_cached: error reading nand off %#x size %d bytes\n",
-						nand_cache_off, NAND_CACHE_SIZE);
+				printf("read_nand_cached0: error reading nand off %#x size 0x%d bytes, retlen=0x%x \n",
+						nand_cache_off, NAND_CACHE_SIZE, retlen);
 				return -1;
 			}
 #else
 			retlen = NAND_CACHE_SIZE;
-			if (nand_read(&nand_info[id->num], nand_cache_off,
-						&retlen, nand_cache) != 0 ||
-					retlen != NAND_CACHE_SIZE) {
-				printf("read_nand_cached: error reading nand off %#x size %d bytes\n",
-						nand_cache_off, NAND_CACHE_SIZE);
+			ReadOK = nand_read(&nand_info[id->num], nand_cache_off, &retlen, nand_cache);
+			if (ReadOK != 0 || retlen != NAND_CACHE_SIZE) {
+				printf("read_nand_cached1: error ReadOK=0x%x reading nand off %#x size 0x%d bytes, retlen=0x%x \n",
+						ReadOK, nand_cache_off, NAND_CACHE_SIZE, retlen);
 				return -1;
 			}
 #endif
@@ -666,6 +668,7 @@ jffs2_1pass_read_inode(struct b_lists *pL, u32 inode, char *dest)
 				putLabeledWord("read_inode: dest = ", lDest);
 #endif
 				switch (jNode->compr) {
+					printf("***jNode->compr=%d***\n", jNode->compr);
 				case JFFS2_COMPR_NONE:
 					ret = (unsigned long) ldr_memcpy(lDest, src, jNode->dsize);
 					break;

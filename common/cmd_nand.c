@@ -347,6 +347,23 @@ int do_nand(cmd_tbl_t * cmdtp, int flag, int argc, char *argv[])
 				opts.quiet      = quiet;
 				ret = nand_write_opts(nand, &opts);
 			}
+			#ifdef CFG_NAND_YAFFS_WRITE
+					} else if (!read && s != NULL &&
+						   (!strcmp(s, ".yaffs") || !strcmp(s, ".yaffs1"))) {
+						nand_write_options_t opts;
+						memset(&opts, 0, sizeof(opts));
+						opts.buffer	= (u_char*) addr;
+						opts.length	= size;
+						opts.offset	= off;
+						opts.pad	= 0;
+						opts.blockalign = 1;
+						opts.quiet      = quiet;
+						opts.writeoob	= 1;
+						opts.autoplace	= 1;
+						if (s[6] == '1')
+							opts.forceyaffs = 1;
+						ret = nand_write_opts(nand, &opts);
+			#endif
 		} else {
 			if (read)
 				ret = nand_read(nand, off, &size, (u_char *)addr);
@@ -458,6 +475,10 @@ U_BOOT_CMD(nand, 5, 1, do_nand,
 	"nand read[.jffs2]     - addr off|partition size\n"
 	"nand write[.jffs2]    - addr off|partition size - read/write `size' bytes starting\n"
 	"    at offset `off' to/from memory address `addr'\n"
+#ifdef CFG_NAND_YAFFS_WRITE
+	"nand write[.yaffs[1]] - addr off|partition size - write `size' byte yaffs image\n"
+	"    starting at offset `off' from memory address `addr' (.yaffs1 for 512+16 NAND)\n"
+#endif
 	"nand erase [clean] [off size] - erase `size' bytes from\n"
 	"    offset `off' (entire device if not specified)\n"
 	"nand bad - show bad blocks\n"
@@ -476,25 +497,48 @@ static int nand_load_image(cmd_tbl_t *cmdtp, nand_info_t *nand,
 	ulong cnt;
 	image_header_t *hdr;
 	int jffs2 = 0;
+	unsigned long erasesize = nand->erasesize;
+	long len;
 
 	s = strchr(cmd, '.');
 	if (s != NULL &&
 	    (!strcmp(s, ".jffs2") || !strcmp(s, ".e") || !strcmp(s, ".i")))
 		jffs2 = 1;
 
-	printf("\nLoading from %s, offset 0x%lx\n", nand->name, offset);
+	//printf("\nLoading from %s, offset 0x%lx,jffs2 = %d\n", nand->name, offset,jffs2);
 
+	jffs2 = 1;////////add by zqyang
 	cnt = nand->oobblock;
 	if (jffs2) {
-		nand_read_options_t opts;
-		memset(&opts, 0, sizeof(opts));
-		opts.buffer	= (u_char*) addr;
-		opts.length	= cnt;
-		opts.offset	= offset;
-		opts.quiet      = 1;
-		r = nand_read_opts(nand, &opts);
+		while(1) {
+			if(nand_block_isbad(nand, offset)) {
+				/* skip bad block */
+				//printf("offset = 0x%x\n",offset);
+				offset += erasesize;
+				continue;
+			}
+			printf("******nand read.jffs2*****cnt = %d addr=0x%x,offset= 0x%x\n",cnt,addr,offset);
+			nand_read_options_t opts;
+			memset(&opts, 0, sizeof(opts));
+			opts.buffer	= (u_char*) addr;
+			opts.length	= cnt;
+			opts.offset	= offset;
+			opts.quiet      = 1;
+			r = nand_read_opts(nand, &opts);
+			break;
+		}
 	} else {
-		r = nand_read(nand, offset, &cnt, (u_char *) addr);
+		while(1) {
+			if(nand_block_isbad(nand, offset)) {
+				/* skip bad block */
+				//printf("offset = 0x%x\n",offset);
+				offset += erasesize;
+				continue;
+			}
+			// printf("********no jffs2********yzqing test  cnt = %d addr=0x%x,offset= 0x%x\n",cnt,addr,offset);
+			r = nand_read(nand, offset, &cnt, (u_char *) addr);
+			break;
+		}
 	}
 
 	if (r) {
@@ -526,12 +570,31 @@ static int nand_load_image(cmd_tbl_t *cmdtp, nand_info_t *nand,
 		r = nand_read_opts(nand, &opts);
 	} else {
 		r = nand_read(nand, offset, &cnt, (u_char *) addr);
-	}
+		while(cnt >0) {
+			if(nand_block_isbad(nand, offset)) {
+				/* skip bad block */
+				//printf("offset = 0x%x\n",offset);
+				offset += erasesize;
+				continue;
+			}
 
-	if (r) {
-		puts("** Read error\n");
-		show_boot_progress (-58);
-		return 1;
+			if(cnt > erasesize) {
+				len = erasesize;
+			} else {
+				len = cnt;
+			}
+			// printf("offset = 0x%x,len= 0x%x\n",offset,len);
+
+			r = nand_read(nand, offset, &len, (u_char *) addr);
+			if (r) {
+				puts("** Read error\n");
+				show_boot_progress (-58);
+				return 1;
+			}
+			cnt = cnt - len;
+			offset += len;
+			addr += len;
+		}
 	}
 	show_boot_progress (58);
 

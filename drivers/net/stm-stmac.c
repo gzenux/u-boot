@@ -45,11 +45,6 @@
 /* do we want to put the PHY in loop-back mode ? */
 /* #define CONFIG_PHY_LOOPBACK */
 
-/* do we want to dump the first 14-bytes of each
- * RX/TX ethernet packet (i.e. the IEEE 802.3 MAC,
- * (or RFC 894/1042) encapsulation header ? */
-/* #define DUMP_ENCAPSULATION_HEADER */
-
 /* prefix to use for diagnostics */
 #ifdef CONFIG_DRIVER_NETSTMAC
 #	define STMAC	"STM-MAC: "
@@ -94,12 +89,13 @@ static void *rx_packets[CONFIG_DMA_RX_SIZE];
 #if defined(CONFIG_STMAC_STE10XP)	/* ST STe10xp */
 
 /* STe100p phy identifier values */
-#define STE100P_PHY_ID		0x1c040011u
+#define STE100P_PHY_ID		0x181b8a01u
 #define STE100P_PHY_ID_MASK	0xffffffffu
 
 /* STe101p phy identifier values */
-#define STE101P_PHY_ID		0x00061c50u
-#define STE101P_PHY_ID_MASK	0xfffffff0u
+//#define STE101P_PHY_ID		0x181b8a0lu        //9161
+#define STE101P_PHY_ID		0x01018f2du            //6103
+#define STE101P_PHY_ID_MASK	0xffffffffu
 
 /******************************************************************************
  * IEEE Standard 802.3-2002 vendor specific registers (0x10-0x1e) STe10xP
@@ -165,28 +161,18 @@ static void *rx_packets[CONFIG_DMA_RX_SIZE];
 #define KSZ8041FTL_PHY_ID	0x00221512u
 #define KSZ8041FTL_PHY_ID_MASK	0x01ffffffu
 
-#elif defined(CONFIG_STMAC_IP1001)	/* IC+ IP1001 */
-
-/* IC+ IP1001 phy identifier values */
-#define IP1001_PHY_ID		0x02430d90u
-#define IP1001_PHY_ID_MASK	0xfffffff0u
-
-#elif defined(CONFIG_STMAC_78Q2123)	/* TERIDIAN 78Q2123 */
-
-/* TERIDIAN 78Q2123 phy identifier values */
-#define TERIDIAN_PHY_ID		0x000e7230u
-#define TERIDIAN_PHY_ID_MASK	0xfffffff0u
-
 #else
 #error Need to define which PHY to use
 #endif
 
+#define PHY_DSCSR_REG		0x11
+#define PHY_ADDR_MSK		0x01f0
+#define PHY_ADDR_SHIFT		4
 
 /* MII mode */
 #define MII_ADVERTISE_PAUSE 0x0400	/* supports the pause command */
 
 
-#ifndef CONFIG_PHY_LOOPBACK
 static int stmac_phy_negotiate (int phy_addr)
 {
 	uint now, tmp, status;
@@ -233,6 +219,8 @@ static unsigned int stmac_phy_check_speed (int phy_addr)
 
 	/* Read Status register */
 	status = stmac_mii_read (phy_addr, MII_BMSR);
+	udelay(100000);  //ÑÓÊ±0.1S gongjia add
+	status = stmac_mii_read (phy_addr, MII_BMSR);
 
 	printf (STMAC);
 
@@ -264,18 +252,19 @@ static unsigned int stmac_phy_check_speed (int phy_addr)
 	stmac_set_mac_mii_cap (full_duplex, speed);
 	return 0;
 }
-#endif	/* CONFIG_PHY_LOOPBACK */
 
 /* Automatically gets and returns the PHY device */
 static unsigned int stmac_phy_get_addr (void)
 {
-	unsigned int i, id;
+	unsigned int i;
 
 	for (i = 0; i < 32; i++) {
+		unsigned int id1, id2, id;
 		unsigned int phyaddr = (i + 1u) % 32u;
-		unsigned int id1 = stmac_mii_read (phyaddr, MII_PHYSID1);
-		unsigned int id2 = stmac_mii_read (phyaddr, MII_PHYSID2);
+		id1 = stmac_mii_read (phyaddr, MII_PHYSID1);
+		id2 = stmac_mii_read (phyaddr, MII_PHYSID2);
 		id  = (id1 << 16) | (id2);
+		printf(STMAC "id=0x%08x,id1=0x%08x,id2=0x%08x\n",id,id1,id2);
 		/* Make sure it is a valid (known) identifier */
 #if defined(CONFIG_STMAC_STE10XP)
 		if ((id & STE101P_PHY_ID_MASK) == STE101P_PHY_ID) {
@@ -300,22 +289,10 @@ static unsigned int stmac_phy_get_addr (void)
 			printf (STMAC "KSZ8041FTL found\n");
 			return phyaddr;
 		}
-#elif defined(CONFIG_STMAC_IP1001)
-		if ((id & IP1001_PHY_ID_MASK) == IP1001_PHY_ID) {
-			printf (STMAC "IC+ IP1001 found\n");
-			return phyaddr;
-		}
-#elif defined(CONFIG_STMAC_78Q2123)
-		if ((id & TERIDIAN_PHY_ID_MASK) == TERIDIAN_PHY_ID) {
-			printf (STMAC "TERIDIAN 78Q2123 found\n");
-			return phyaddr;
-		}
-#else
-#error Need to define which PHY to use
 #endif	/* CONFIG_STMAC_STE10XP */
 	}
 
-	printf (STMAC "Unable to find a known PHY (ID=0x%08x)\n", id);
+	printf (STMAC "Unable to find a PHY (unknown ID?)\n");
 	return (-1);
 }
 
@@ -343,20 +320,13 @@ static int stmac_phy_init (void)
 	value = stmac_mii_read (eth_phy_addr, PHY_SUP_REG);
 #elif defined(CONFIG_STMAC_KSZ8041FTL)
 	/* The Micrel KSZ8041FTL does not appear to support
-	 * reading the H/W PHY address from any register.  */
-#	define CONFIG_STMAC_BYPASS_ADDR_MISMATCH
-#elif defined(CONFIG_STMAC_IP1001)
-	/* The IC+ IP1001 does not appear to support
-	 * reading the H/W PHY address from any register.  */
-#	define CONFIG_STMAC_BYPASS_ADDR_MISMATCH
-#elif defined(CONFIG_STMAC_78Q2123)
-	/* The TERIDIAN 78Q2123 does not appear to support
-	 * reading the H/W PHY address from any register.  */
-#	define CONFIG_STMAC_BYPASS_ADDR_MISMATCH
+	 * reading the H/W PHY address from any register.
+	 * So, we bypass the following test.
+	 */
 #else
-#error Need to define which PHY to use
+#error Need to define PHY
 #endif
-#if !defined(CONFIG_STMAC_BYPASS_ADDR_MISMATCH)
+#if !defined(CONFIG_STMAC_KSZ8041FTL)
 	value = (value & PHY_ADDR_MSK) >> PHY_ADDR_SHIFT;
 	if (value != eth_phy_addr) {
 		printf (STMAC "PHY address mismatch with hardware (hw %d != %d)\n",
@@ -392,40 +362,14 @@ static int stmac_phy_init (void)
 	/* Update our Auto-Neg Advertisement Register */
 	stmac_mii_write (eth_phy_addr, MII_ADVERTISE, advertised_caps);
 
-	/*
-	 * For Gigabit capable PHYs, then we will disable the
-	 * ability to auto-negotiate at 1000BASE-T (Gigabit).
-	 * Once ST's SoCs are capable of Gigabit, then we will review!
-	 */
-#if defined(CONFIG_STMAC_IP1001)
-	value = stmac_mii_read (eth_phy_addr, MII_GBCR);
-	value &= ~(GBCR_1000HALF|GBCR_1000FULL);
-	stmac_mii_write (eth_phy_addr, MII_GBCR, value);
-#endif
-
-#ifdef CONFIG_PHY_LOOPBACK
-
-	/* put the PHY in loop-back mode, if required */
-	printf ( STMAC "Forcing PHY loop-back at full-duplex, 100Mbps\n");
-	value = stmac_mii_read (eth_phy_addr, MII_BMCR);
-	value |= BMCR_LOOPBACK;		/* enable loop-back mode (in the PHY) */
-	value &= ~BMCR_ANENABLE;	/* disable auto-negotiation */
-	value &= ~BMCR_SPEED_MASK;	/* clear all speed bits */
-	value |= BMCR_SPEED100;		/* set speed to 100Mbps */
-	value |= BMCR_FULLDPLX;		/* enable full-duplex */
-	stmac_mii_write (eth_phy_addr, MII_BMCR, value);
-	/* ensure the write completes! */
-	(void)stmac_mii_read (eth_phy_addr, MII_BMCR);
-
-	/* set the MAC capabilities appropriately */
-	stmac_set_mac_mii_cap (1, 100);	/* 100Mbps, full-duplex */
-
-#else	/* CONFIG_PHY_LOOPBACK */
-
-	/* auto-negotiate with remote link partner */
 	stmac_phy_negotiate (eth_phy_addr);
 	stmac_phy_check_speed (eth_phy_addr);
 
+#ifdef CONFIG_PHY_LOOPBACK
+	/* put the PHY in loop-back mode, if required */
+	value = stmac_mii_read (eth_phy_addr, MII_BMCR);
+	value |= BMCR_LOOPBACK;
+	stmac_mii_write (eth_phy_addr, MII_BMCR, value);
 #endif	/* CONFIG_PHY_LOOPBACK */
 
 	return 0;
@@ -1145,7 +1089,7 @@ static void stmac_eth_rx (void)
 			 * the CRC */
 			frame_len = drx->des01.rx.frame_length;
 			if ((frame_len >= 0) && (frame_len <= PKTSIZE_ALIGN)) {
-#if defined(DEBUG) || defined(CONFIG_PHY_LOOPBACK) || defined(DUMP_ENCAPSULATION_HEADER)
+#if defined(DEBUG) || defined(CONFIG_PHY_LOOPBACK)
 				const unsigned char *p = rx_packets[cur_rx];
 				printf("\nRX[%d]:  0x%08x ", cur_rx, p);
 				printf("DA=%02x:%02x:%02x:%02x:%02x:%02x",
@@ -1266,6 +1210,7 @@ static int stmac_reset_eth (bd_t * bd)
 
 	if (stmac_phy_init () < 0) {
 		printf (STMAC "Phy not detected\n");
+		printf (STMAC "Phy not detected*******************\n");
 		return -1;
 	}
 
@@ -1323,7 +1268,7 @@ extern int eth_rx (void)
 extern int eth_send (volatile void *packet, int length)
 {
 	PRINTK (STMAC "entering %s()\n", __FUNCTION__);
-#if defined(DEBUG) || defined(CONFIG_PHY_LOOPBACK) || defined(DUMP_ENCAPSULATION_HEADER)
+#if defined(DEBUG) || defined(CONFIG_PHY_LOOPBACK)
 	const unsigned char * p = (const unsigned char*)packet;
 	printf("TX   :  0x%08x ", p);
 	printf("DA=%02x:%02x:%02x:%02x:%02x:%02x",

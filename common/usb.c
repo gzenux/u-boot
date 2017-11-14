@@ -67,7 +67,7 @@
 #define USB_BUFSIZ	512
 
 static struct usb_device usb_dev[USB_MAX_DEVICE];
-static int dev_index;
+int dev_index;
 static int running;
 static int asynch_allowed;
 static struct devrequest setup_packet;
@@ -172,8 +172,9 @@ int usb_control_msg(struct usb_device *dev, unsigned int pipe,
 			void *data, unsigned short size, int timeout)
 {
 	if((timeout==0)&&(!asynch_allowed)) /* request for a asynch control pipe is not allowed */
+	{
 		return -1;
-
+	}
 	/* set setup command */
 	setup_packet.requesttype = requesttype;
 	setup_packet.request = request;
@@ -707,7 +708,7 @@ struct usb_device * usb_get_dev_index(int index)
 struct usb_device * usb_alloc_new_device(void)
 {
 	int i;
-	USB_PRINTF("New Device %d\n",dev_index);
+
 	if(dev_index==USB_MAX_DEVICE) {
 		printf("ERROR, too many USB Devices, max=%d\n",USB_MAX_DEVICE);
 		return NULL;

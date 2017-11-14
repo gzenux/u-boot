@@ -269,12 +269,56 @@ void do_bootm_linux (cmd_tbl_t * cmdtp, int flag, int argc, char *argv[],
 #endif
 
 	strcpy (COMMAND_LINE, commandline);
+
+	{
+		char *CMDHeader;
+		unsigned int CMDLen, i;
+		unsigned char Buffer[30] = {0};
+		unsigned int StartAddr = 0xa0000 + 19;
+		unsigned char MacAddr[13] = {0};
+
+		CMDHeader = COMMAND_LINE;
+		CMDLen=strlen(CMDHeader);
+
+		printf("CMDLen=%d\n", CMDLen);
+		for(i=0; i<(CMDLen-6); i++) {
+			if(0 == strncmp(&CMDHeader[i], "hwaddr", 6))
+				break;
+			else
+				continue;
+		}
+
+		if(i == (CMDLen-6)) {
+			printf("There is no \"hwaddr\" keywords!\n");
+		} else {
+			printf("There is  \"hwaddr\" keywords! Position=%d\n", i);
+		}
+
+		ReadSPIFlashDataToBuffer(StartAddr, MacAddr, 12);
+
+		MacAddr[12] = 0;
+		printf("Read MacAddr=%s\n", MacAddr);
+		memset(Buffer, 0, 30);
+
+		if(MacAddr[0]==0xff && MacAddr[1]==0xff && MacAddr[2]==0xff ) {
+			printf("There is no valid MAC in spi Flash!\n");
+			//sprintf(Buffer,"hwaddr:%s", "10:08:E2:12:06:BD" );
+		} else {
+			sprintf(Buffer,"hwaddr:%c%c:%c%c:%c%c:%c%c:%c%c:%c%c", MacAddr[0],MacAddr[1],MacAddr[2],MacAddr[3], \
+							MacAddr[4],MacAddr[5],MacAddr[6],MacAddr[7],MacAddr[8],MacAddr[9],MacAddr[10],MacAddr[11]);
+		}
+
+		//sprintf(Buffer,"hwaddr:%c%c:%c%c:%c%c:%c%c:%c%c:%c%c", MacAddr[0],MacAddr[1],MacAddr[2],MacAddr[3], \
+		//				MacAddr[4],MacAddr[5],MacAddr[6],MacAddr[7],MacAddr[8],MacAddr[9],MacAddr[10],MacAddr[11]);
+		memcpy(&CMDHeader[i], Buffer, strlen(Buffer));
+	}
+
 	if (*extra)
 		strcpy (COMMAND_LINE + strlen (commandline), extra);
 
 	/* linux_params_init (gd->bd->bi_boot_params, commandline); */
 
-	printf ("\nStarting kernel %s - 0x%08x - %d ...\n\n", COMMAND_LINE,
+	printf ("\n[iptv_kernel]:Starting kernel %s - 0x%08x - %d ...\n\n", COMMAND_LINE,
 		*INITRD_START, *INITRD_SIZE);
 
 	/*

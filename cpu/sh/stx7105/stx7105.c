@@ -316,9 +316,20 @@ extern void stx7105_spi_sda(const int val)
 extern unsigned char stx7105_spi_read(void)
 {
 	const int pin = 3;	/* PIO15[3] = SPI_DIN */
-	return STPIO_GET_PIN(PIO_PORT(15), pin);
+	return STPIO_GET_PIN(PIO_PORT(15), pin);  //gongjia mark
 }
 
+extern unsigned char stx7105_key_read(void)
+{
+	const int pin = 1;	/* PIO0[1] =  */
+	return STPIO_GET_PIN(PIO_PORT(0), pin);  //gongjia mark
+}
+
+extern unsigned char stx7105_led_write(int led)
+{
+	const int pin = 4;	/* PIO0[1] =  */
+	STPIO_SET_PIN(PIO_PORT(0), pin,led);  //gongjia mark
+}
 /*
  * assert or de-assert the SPI Chip Select line.
  *

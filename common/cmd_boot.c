@@ -87,3 +87,26 @@ U_BOOT_CMD(
 	"reset   - Perform RESET of the CPU\n",
 	NULL
 );
+
+extern int do_reset_flag (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
+{
+	volatile unsigned short *ST40_CPG1_WTCNT   = 0xFFC00000 + 0x08;
+	volatile unsigned short *ST40_CPG1_WTCSR   = 0xFFC00000 + 0x0C;
+	volatile unsigned short *ST40_CPG1_WTCSR2  = 0xFFC00000 + 0x1C;
+
+
+	*ST40_CPG1_WTCNT = 0x5AF0;//0x5AF0;
+	*ST40_CPG1_WTCSR = 0xA547;
+	*ST40_CPG1_WTCSR2 = 0xAA00;
+	*ST40_CPG1_WTCSR  = 0xA5C7;
+
+	for(;;)
+		printf("waiting for restar\n");
+}
+
+U_BOOT_CMD(
+	reboot, 1, 0,do_reset_flag,
+	"reboot   - reset flag, reboot\n",
+	NULL
+);
+
