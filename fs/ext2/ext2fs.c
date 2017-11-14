@@ -210,16 +210,12 @@ static int ext2fs_read_inode
 #ifdef DEBUG
 	printf ("ext2fs read inode %d\n", ino);
 #endif
-	status = ext2fs_blockgroup (data,
-				    ino /
-				    __le32_to_cpu (sblock->inodes_per_group),
-				    &blkgrp);
+	status = ext2fs_blockgroup (data,ino /__le32_to_cpu (sblock->inodes_per_group),&blkgrp);
 	if (status == 0) {
 		return (0);
 	}
 	inodes_per_block = EXT2_BLOCK_SIZE (data) / 128;
-	blkno = (ino % __le32_to_cpu (sblock->inodes_per_group)) /
-		inodes_per_block;
+	blkno = (ino % __le32_to_cpu (sblock->inodes_per_group)) / inodes_per_block;
 	blkoff = (ino % __le32_to_cpu (sblock->inodes_per_group)) %
 		inodes_per_block;
 #ifdef DEBUG
@@ -243,7 +239,7 @@ void ext2fs_free_node (ext2fs_node_t node, ext2fs_node_t currroot) {
 	}
 }
 
-
+#if 0
 static int ext2fs_read_block (ext2fs_node_t node, int fileblock) {
 	struct ext2_data *data = node->data;
 	struct ext2_inode *inode = &node->inode;
@@ -397,6 +393,299 @@ int ext2fs_read_file
 	}
 	blockcnt = ((len + pos) + blocksize - 1) / blocksize;
 
+    //printf("Loading vmlinux.ub...\n");
+	for (i = pos / blocksize; i < blockcnt; i++) {
+		int blknr;
+		int blockoff = pos % blocksize;
+		int blockend = blocksize;
+
+		int skipfirst = 0;
+
+		blknr = ext2fs_read_block (node, i);
+		if (blknr < 0) {
+			return (-1);
+		}
+		blknr = blknr << log2blocksize;
+
+		/* Last block.  */
+		if (i == blockcnt - 1) {
+			blockend = (len + pos) % blocksize;
+
+			/* The last portion is exactly blocksize.  */
+			if (!blockend) {
+				blockend = blocksize;
+			}
+	
+		}
+
+		/* First block.  */
+		if (i == pos / blocksize) {
+			skipfirst = blockoff;
+			blockend -= skipfirst;
+
+		}
+        if(!(i%3))
+            {
+                printf(". ");
+            }
+		/* If the block number is 0 this block is not stored on disk but
+		   is zero filled instead.  */
+		if (blknr) {
+			int status;
+
+			status = ext2fs_devread (blknr, skipfirst, blockend, buf);
+			if (status == 0) {
+				return (-1);
+			}
+		} else {
+			memset (buf, blocksize - skipfirst, 0);
+		}
+		buf += blocksize - skipfirst;
+	}
+	return (len);
+}
+#endif
+
+
+#define CFG_OPTIMIZE_EXT2_READ
+
+#ifdef CFG_OPTIMIZE_EXT2_READ
+static int ext2fs_read_block (ext2fs_node_t node, int fileblock, int *stream) {
+#else
+static int ext2fs_read_block (ext2fs_node_t node, int fileblock) {
+#endif
+	struct ext2_data *data = node->data;
+	struct ext2_inode *inode = &node->inode;
+	int blknr;
+	int blksz = EXT2_BLOCK_SIZE (data);
+	int log2_blksz = LOG2_EXT2_BLOCK_SIZE (data);
+	int status;
+	
+    #ifdef CFG_OPTIMIZE_EXT2_READ
+		*stream = 1;/* itself */
+    #endif
+    
+	/* Direct blocks.  */
+	if (fileblock < INDIRECT_BLOCKS) 
+	{
+		blknr = __le32_to_cpu (inode->b.blocks.dir_blocks[fileblock]);
+		#ifdef CFG_OPTIMIZE_EXT2_READ
+		while(((inode->b.blocks.dir_blocks[fileblock + 1] - \
+			inode->b.blocks.dir_blocks[fileblock]) == 1) && \
+			(fileblock < INDIRECT_BLOCKS - 1)) 
+			{
+				fileblock++;
+				*stream += 1;
+		    }
+        #endif
+	}
+	/* Indirect.  */
+	else if (fileblock < (INDIRECT_BLOCKS + (blksz / 4))) {
+		if (indir1_block == NULL) {
+			indir1_block = (uint32_t *) malloc (blksz);
+			if (indir1_block == NULL) {
+				printf ("** ext2fs read block (indir 1) malloc failed. **\n");
+				return (-1);
+			}
+			indir1_size = blksz;
+			indir1_blkno = -1;
+		}
+		if (blksz != indir1_size) {
+			free (indir1_block);
+			indir1_block = NULL;
+			indir1_size = 0;
+			indir1_blkno = -1;
+			indir1_block = (uint32_t *) malloc (blksz);
+			if (indir1_block == NULL) {
+				printf ("** ext2fs read block (indir 1) malloc failed. **\n");
+				return (-1);
+			}
+			indir1_size = blksz;
+		}
+		if ((__le32_to_cpu (inode->b.blocks.indir_block) <<
+		     log2_blksz) != indir1_blkno) {
+			status = ext2fs_devread (__le32_to_cpu(inode->b.blocks.indir_block) << log2_blksz,0,blksz,(char *) indir1_block);
+			if (status == 0) {
+				printf ("** ext2fs read block (indir 1) failed. **\n");
+				return (0);
+			}
+			indir1_blkno =__le32_to_cpu (inode->b.blocks.indir_block) << log2_blksz;
+		}
+		blknr = __le32_to_cpu (indir1_block[fileblock - INDIRECT_BLOCKS]);
+	    #ifdef CFG_OPTIMIZE_EXT2_READ
+			while(((__le32_to_cpu (indir1_block[fileblock - INDIRECT_BLOCKS+1]) - \
+				__le32_to_cpu (indir1_block[fileblock - \
+				INDIRECT_BLOCKS])) == 1) && \
+				(fileblock < (blksz - 1))) 
+				{
+					fileblock++;
+					*stream += 1;
+			    }
+        #endif
+	}
+	/* Double indirect.  */
+	else if (fileblock <(INDIRECT_BLOCKS + (blksz / 4 * (blksz / 4 + 1)))) 
+	{
+
+		unsigned int perblock = blksz / 4;
+		unsigned int rblock = fileblock - (INDIRECT_BLOCKS + blksz / 4);
+		
+        #ifdef CFG_OPTIMIZE_EXT2_READ
+				int rbcnt = 0;
+        #endif
+		if (indir1_block == NULL) {
+			indir1_block = (uint32_t *) malloc (blksz);
+			if (indir1_block == NULL) {
+				printf ("** ext2fs read block (indir 2 1) malloc failed. **\n");
+				return (-1);
+			}
+			indir1_size = blksz;
+			indir1_blkno = -1;
+		}
+		if (blksz != indir1_size) {
+			free (indir1_block);
+			indir1_block = NULL;
+			indir1_size = 0;
+			indir1_blkno = -1;
+			indir1_block = (uint32_t *) malloc (blksz);
+			if (indir1_block == NULL) {
+				printf ("** ext2fs read block (indir 2 1) malloc failed. **\n");
+				return (-1);
+			}
+			indir1_size = blksz;
+		}
+		if ((__le32_to_cpu (inode->b.blocks.double_indir_block) << log2_blksz) != indir1_blkno) 
+		{
+			status = ext2fs_devread(__le32_to_cpu(inode->b.blocks.double_indir_block) << log2_blksz,
+						0, blksz,
+						(char *) indir1_block);
+			if (status == 0) {
+				printf ("** ext2fs read block (indir 2 1) failed. **\n");
+				return (-1);
+			}
+			indir1_blkno =__le32_to_cpu (inode->b.blocks.double_indir_block) << log2_blksz;
+		}
+
+		if (indir2_block == NULL) {
+			indir2_block = (uint32_t *) malloc (blksz);
+			if (indir2_block == NULL) {
+				printf ("** ext2fs read block (indir 2 2) malloc failed. **\n");
+				return (-1);
+			}
+			indir2_size = blksz;
+			indir2_blkno = -1;
+		}
+		if (blksz != indir2_size) {
+			free (indir2_block);
+			indir2_block = NULL;
+			indir2_size = 0;
+			indir2_blkno = -1;
+			indir2_block = (uint32_t *) malloc (blksz);
+			if (indir2_block == NULL) {
+				printf ("** ext2fs read block (indir 2 2) malloc failed. **\n");
+				return (-1);
+			}
+			indir2_size = blksz;
+		}
+		if ((__le32_to_cpu (indir1_block[rblock / perblock]) <<
+		     log2_blksz) != indir1_blkno) {
+			status = ext2fs_devread (__le32_to_cpu(indir1_block[rblock / perblock]) << log2_blksz,
+						 0, blksz,
+						 (char *) indir2_block);
+			if (status == 0) {
+				printf ("** ext2fs read block (indir 2 2) failed. **\n");
+				return (-1);
+			}
+			indir2_blkno =__le32_to_cpu (indir1_block[rblock / perblock]) << log2_blksz;
+		}
+		blknr = __le32_to_cpu (indir2_block[rblock % perblock]);
+		#ifdef CFG_OPTIMIZE_EXT2_READ
+					rbcnt = rblock % perblock;
+					while(((__le32_to_cpu (indir2_block[rbcnt + 1]) - \
+						__le32_to_cpu (indir2_block[rbcnt])) == 1) \
+						&& (rbcnt < (blksz - 1))) {
+							rbcnt++;
+							*stream += 1;
+					}
+        #endif
+	}
+	/* Tripple indirect.  */
+	else {
+		    printf ("** ext2fs doesn't support tripple indirect blocks. **\n");
+		    return (-1);
+	     }
+#ifdef DEBUG
+	printf ("ext2fs_read_block %08x\n", blknr);
+#endif
+	return (blknr);
+}
+#ifdef CFG_OPTIMIZE_EXT2_READ
+int ext2fs_read_file(ext2fs_node_t node, int pos, unsigned int len, char *buf) 
+{
+	int log2blocksize = LOG2_EXT2_BLOCK_SIZE (node->data);
+	int blocksize = 1 << (log2blocksize + DISK_SECTOR_BITS);
+	unsigned int filesize = __le32_to_cpu(node->inode.size);
+	int blknr;
+	int blockend;
+	int status;
+	int remain = len;
+	char *buffer = buf;
+	int stream = 0;
+	int cur = pos / blocksize;
+	int blockoff = pos % blocksize;
+
+	/* Adjust len so it we can't read past the end of the file.  */
+	if (len > filesize) {
+		len = filesize;
+	}
+	while (remain > 0) {
+		blknr = ext2fs_read_block (node, cur, &stream);
+		if (blknr < 0) {
+			return (-1);
+		}
+		blknr = blknr << log2blocksize; 
+
+		if(remain < blocksize * stream) {
+			blockend = remain;
+		} else {
+			blockend = blocksize * stream;
+		}
+
+		status = ext2fs_devread (blknr, blockoff, blockend, buffer);
+		if (status == 0) {
+			return (-1);
+		}
+
+		remain -= blockend;
+		buffer += blockend;
+		cur += stream;
+		blockoff = 0;
+
+		if(remain == 0)
+		{
+			return (len);
+		}
+		else if(remain < 0)
+			return (-1);
+	}
+
+	return (len);
+}
+#else
+int ext2fs_read_file(ext2fs_node_t node, int pos, unsigned int len, char *buf) 
+{
+	int i;
+	int blockcnt;
+	int log2blocksize = LOG2_EXT2_BLOCK_SIZE (node->data);
+	int blocksize = 1 << (log2blocksize + DISK_SECTOR_BITS);
+	unsigned int filesize = __le32_to_cpu(node->inode.size);
+
+	/* Adjust len so it we can't read past the end of the file.  */
+	if (len > filesize) {
+		len = filesize;
+	}
+	blockcnt = ((len + pos) + blocksize - 1) / blocksize;
+
 	for (i = pos / blocksize; i < blockcnt; i++) {
 		int blknr;
 		int blockoff = pos % blocksize;
@@ -442,6 +731,7 @@ int ext2fs_read_file
 	}
 	return (len);
 }
+#endif
 
 
 static int ext2fs_iterate_dir (ext2fs_node_t dir, char *name, ext2fs_node_t * fnode, int *ftype)
@@ -612,9 +902,8 @@ static char *ext2fs_read_symlink (ext2fs_node_t node) {
 }
 
 
-int ext2fs_find_file1
-	(const char *currpath,
-	 ext2fs_node_t currroot, ext2fs_node_t * currfound, int *foundtype) {
+int ext2fs_find_file1(const char *currpath,ext2fs_node_t currroot, ext2fs_node_t * currfound, int *foundtype) 
+{
 	char fpath[strlen (currpath) + 1];
 	char *name = fpath;
 	char *next;
@@ -743,7 +1032,8 @@ int ext2fs_find_file
 }
 
 
-int ext2fs_ls (char *dirname) {
+int ext2fs_ls (char *dirname) 
+{
 	ext2fs_node_t dirnode;
 	int status;
 
@@ -762,6 +1052,24 @@ int ext2fs_ls (char *dirname) {
 	return (0);
 }
 
+int ext2fs_find_dir (char *dirname) 
+{
+	ext2fs_node_t dirnode;
+	int status;
+
+	if (ext2fs_root == NULL) {
+		return (0);
+	}
+
+	status = ext2fs_find_file (dirname, &ext2fs_root->diropen, &dirnode,
+				   FILETYPE_DIRECTORY);
+	if (status != 1) {
+		printf ("[uboot_iptv]:Can not find directory. **\n");
+		return (1);
+	}
+	ext2fs_free_node (dirnode, &ext2fs_root->diropen);
+	return (0);
+}
 
 int ext2fs_open (char *filename) {
 	ext2fs_node_t fdiro = NULL;

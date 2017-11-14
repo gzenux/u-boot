@@ -39,11 +39,22 @@
 #endif
 #include <asm/socregs.h>
 #include <asm/st40reg.h>
+#include <asm/stx7105reg.h>
+#include <asm/io.h>
+#include <asm/pio.h>
+#include <SvnVersion.h>
+#include <watchdog.h>
+
+
+
+
+
 
 extern ulong _uboot_end_data;
 extern ulong _uboot_end;
 
 ulong monitor_flash_len;
+
 
 #ifndef CONFIG_IDENT_STRING
 #define CONFIG_IDENT_STRING ""
@@ -57,7 +68,7 @@ const char version_string[] =
  */
 
 #define	TOTAL_MALLOC_LEN	CFG_MALLOC_LEN
-
+#define	UPDATE_SW_OK 0
 static ulong mem_malloc_start;
 static ulong mem_malloc_end;
 static ulong mem_malloc_brk;
@@ -119,7 +130,6 @@ static int display_banner (void)
 #ifndef CFG_NO_FLASH
 static void display_flash_config (ulong size)
 {
-	puts ("NOR:   ");
 	print_size (size, "\n");
 }
 #endif /* CFG_NO_FLASH */
@@ -169,7 +179,9 @@ init_fnc_t *init_sequence[] = {
 	NULL,
 };
 
+#define smit_readl(addr)       (*(volatile unsigned int *)(addr))
 
+/* U-BOOT START */
 void start_sh4boot (void)
 {
 	DECLARE_GLOBAL_DATA_PTR;
@@ -183,6 +195,8 @@ void start_sh4boot (void)
 
 	char *s, *e;
 	int i;
+	unsigned int regsvalue;
+	unsigned char SvnVersionInFlash[16]={0};
 
 	addr = TEXT_BASE;
 	/* Reserve memory for malloc() arena. */
@@ -237,14 +251,9 @@ void start_sh4boot (void)
 	/* initialize malloc() area */
 	mem_malloc_init ();
 
-#if defined(CONFIG_CMD_NAND)
-	puts ("NAND:  ");
-	nand_init ();		/* go init the NAND */
-#endif
-
 #if defined(CONFIG_SPI)
-	puts ("SPI:  ");
 	spi_init ();		/* go init the SPI */
+
 #if defined(CFG_ENV_IS_IN_EEPROM) && !defined(CFG_BOOT_FROM_SPI)
 	env_init_after_spi_done ();
 #endif
@@ -282,7 +291,8 @@ void start_sh4boot (void)
 	console_init_r ();
 
 /** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/
-
+	serial_init_pio5();
+	F450_enable();
 	/* Initialize from environment */
 	if ((s = getenv ("loadaddr")) != NULL) {
 		load_addr = simple_strtoul (s, NULL, 16);
@@ -300,11 +310,26 @@ void start_sh4boot (void)
 
 #if defined(CONFIG_CMD_NET)
 #if defined(CONFIG_NET_MULTI)
-	puts ("Net:   ");
 #endif
 	eth_initialize(gd->bd);
 #endif
+    regsvalue = smit_readl(0xfe00112c);
 
+	/*0xb0000 --0xb0010  svn version*/
+	ReadSPIFlashDataToBuffer(0x97000, SvnVersionInFlash, 15);
+	SvnVersionInFlash[15]=0;
+    printf("Svn Version: %s\n", SvnVersionInFlash);
+
+	if(0 != strncmp(CURRENTSVNVERSION, SvnVersionInFlash, strlen(CURRENTSVNVERSION)))
+	{
+		memset(SvnVersionInFlash, 0, 16);
+		sprintf(SvnVersionInFlash, "%s", CURRENTSVNVERSION);
+		SvnVersionInFlash[15]=0;		
+		WriteSPIFlashDataFromBuffer(0x97000, SvnVersionInFlash, 16);
+	}
+    /* iptv project */
+    update_process();
+	
 	/* main_loop() can return to retry autoboot, if so just run it again. */
 	for (;;) {
 		main_loop ();
@@ -316,7 +341,6 @@ void start_sh4boot (void)
 
 void hang (void)
 {
-	puts ("### ERROR ### Please RESET the board ###\n");
 	for (;;);
 }
 
@@ -324,7 +348,6 @@ void hang (void)
 static void sh_reset (void) __attribute__ ((noreturn));
 static void sh_reset (void)
 {
-#if 1
 	/*
 	 * We will use the on-chip watchdog timer to force a
 	 * power-on-reset of the device.
@@ -352,18 +375,12 @@ static void sh_reset (void)
 
 	/* wait for H/W reset to kick in ... */
 	for (;;);
-#else
-	ulong sr;
-	asm ("stc sr, %0":"=r" (sr));
-	sr |= (1 << 28);	/* set block bit */
-	asm ("ldc %0, sr": :"r" (sr));
-	asm volatile ("trapa #0");
-#endif
 }
 
 
 extern int do_reset (cmd_tbl_t * cmdtp, int flag, int argc, char *argv[])
 {
 	sh_reset();
-	/*NOTREACHED*/ return (0);
+	/*NOTREACHED*/ 
+	return (0);
 }

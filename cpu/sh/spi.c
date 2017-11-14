@@ -130,7 +130,8 @@
 #define OP_READ_DEVID		0x9fu		/* Read ID */
 #define OP_READ_ARRAY		0x03u		/* Read Data Bytes */
 #define OP_WREN			0x06u		/* Write Enable */
-#define OP_SE			0xD8u		/* Sector Erase */
+//#define OP_SE			0xD8u		/* Sector Erase */
+#define OP_SE			0x20u		/* Sector Erase iptv winbond*/
 #define OP_PP			0x02u		/* Page Program */
 
 #define SR_WIP			(1u<<0)		/* Status Register Write In Progress bit */
@@ -180,48 +181,6 @@ static unsigned eraseSize;	/* smallest supported erase size */
 static unsigned deviceSize;	/* Size of the device in Bytes */
 static const char * deviceName;	/* Name of the device */
 
-
-/**********************************************************************/
-
-
-#if 0
-#define isprint(x)    ( ((x)>=0x20u) && ((x)<0x7fu) )
-static void hexdump(
-	const unsigned char * const data,
-	const unsigned int data_size)
-{
-	const unsigned int wrap = 16;
-	const unsigned int ceiling = ((data_size-1) / wrap + 1) * wrap;
-	unsigned int i, j;
-
-	if (data_size==0)	/* no data ? */
-	{
-		return;		/* do nothing */
-	}
-
-	for(i=0; i<ceiling; i++)
-	{
-			/* print the hexadecimal represenation */
-		printf(i<data_size ? "%02x " : ".. ",
-			data[i]);
-
-			/* now the ASCII representation */
-		if (i%wrap==(wrap-1))
-		{
-			printf("   ");
-			for(j=i+1-wrap; (j<=i)&&(j<data_size);j++)
-			{
-				printf("%c",
-					isprint(data[j]) ? data[j] : '.');
-			}
-			printf("\n");
-		}
-	}
-}
-#endif
-
-
-/**********************************************************************/
 
 
 /*
@@ -339,14 +298,6 @@ extern int spi_xfer(
 		chipsel(0);
 	}
 
-#if 0	/* QQQ - DELETE */
-	if (din != NULL)
-	{
-		hexdump(din, bytelen);
-		printf("\n");
-	}
-#endif	/* QQQ - DELETE */
-
 	return 0;	/* success */
 }
 
@@ -449,10 +400,9 @@ static int spi_probe_serial_flash(
 	deviceName = "Atmel AT45DB321D";
 
 #elif defined(CONFIG_SPI_FLASH_ST)
-
-	if (
-		(devid[1] != 0x20u)	||	/* Manufacturer ID */
-		(devid[2] != 0x20u)	||	/* Memory Type */
+ 
+       if (!((devid[1] == 0xefu) || (devid[1] == 0x20u))	||	 /* Manufacturer ID */
+	     !((devid[2] == 0x40u) || (devid[2] == 0x20u))	||	 /* Memory Type */
 		(				/* Memory Capacity */
 			(devid[3] != 0x14u) &&	/* M25P80 */
 			(devid[3] != 0x15u) &&	/* M25P16 */
@@ -467,7 +417,7 @@ static int spi_probe_serial_flash(
 		return -1;
 	}
 	pageSize   = 256u;
-	eraseSize  = 64u<<10;			/* 64 KiB, 256 pages/sector */
+	eraseSize  = 4u<<10;			/* 4 KiB, 16 pages/sector */
 	deviceSize = 1u<<devid[3];		/* Memory Capacity */
 	if (devid[3] == 0x14u)
 	{
@@ -529,7 +479,7 @@ static int spi_probe_serial_flash(
 
 #if 1
 	/* tell them what we found */
-	printf("info: found %s (%uMiB) device (page=%u,erase=%u)\n",
+	printf("SPI: %s (%uMiB) device (page=%u,erase=%u)\n",
 		deviceName,
 		deviceSize >> 20,	/* in MiB */
 		pageSize,		/* in bytes */
@@ -637,7 +587,7 @@ extern void spi_init(void)
 	reg = ssc_read( SSC_CON);
 	reg |= SSC_CON_SR;		/* enable software reset */
 	ssc_write( SSC_CON, reg);
-	udelay(1);			/* let reset propagate */
+	udelay(1);			    /* let reset propagate */
 	reg = ssc_read( SSC_CON);
 	reg &= ~SSC_CON_SR;		/* disable software reset */
 	ssc_write( SSC_CON, reg);
@@ -852,9 +802,9 @@ static void my_spi_write(
 	unsigned page;
 	const uchar * ptr;
 #if defined(CONFIG_SPI_FLASH_ST)
-	unsigned char buff[256<<10];	/* maximum of 256 KiB erase size */
+	static unsigned char buff[256<<10];	/* maximum of 256 KiB erase size */
 #elif defined(CONFIG_SPI_FLASH_MXIC)
-	unsigned char buff[4<<10];	/* maximum of 4 KiB erase size */
+	static unsigned char buff[4<<10];	/* maximum of 4 KiB erase size */
 #endif
 	unsigned char enable[1] = { OP_WREN };
 	unsigned char erase[4] = {
@@ -965,11 +915,11 @@ extern ssize_t spi_write (
 	unsigned written = 0;		/* amount written between two dots */
 	spi_chipsel_type const chipsel = spi_chipsel[0];	/* SPI Device #0 */
 
+
 	if (len < 1) return len;
 	if (last >= deviceSize)	/* Out of range ? */
 	{
-		printf("ERROR: Offset out of range (max=0x%lx)\n",
-			deviceSize-1ul);
+		printf("ERROR: Offset out of range (max=0x%lx)\n", deviceSize-1ul);
 		return 0;
 	}
 
@@ -998,7 +948,6 @@ extern ssize_t spi_write (
 
 		/* a whole erase block */
 		my_spi_write(chipsel, ptr, buffer, eraseSize);
-
 		sector++;
 		ptr += eraseSize;
 		buffer += eraseSize;

@@ -165,7 +165,7 @@ static void configPIO(void)
 	SET_PIO_ASC(PIO_PORT(0), 0, 1, 4, 3);  /* UART0 */
 #elif CFG_STM_ASC_BASE == ST40_ASC2_REGS_BASE	/* UART #2 */
 	SET_PIO_ASC(PIO_PORT(4), 0, 1, 2, 3);  /* UART2 */
-#elif CFG_STM_ASC_BASE == ST40_ASC3_REGS_BASE	/* UART #3 */
+////#elif CFG_STM_ASC_BASE == ST40_ASC3_REGS_BASE	/* UART #3 */
 	SET_PIO_ASC(PIO_PORT(5), 0, 1, 3, 2);  /* UART3 */
 #else
 #error Unsure which UART to configure!
@@ -197,7 +197,7 @@ static void configPIO(void)
 	sysconf &= ~0x0f0ful;	/* 3,3,3,3 */
 	sysconf |=  0x0f00ul;	/* 2,2,2,2 */
 	*STX7105_SYSCONF_SYS_CFG34 = sysconf;
-#elif CFG_STM_ASC_BASE == ST40_ASC3_REGS_BASE	/* UART #3 */
+//////#elif CFG_STM_ASC_BASE == ST40_ASC3_REGS_BASE	/* UART #3 */
 	/* Route UART3 via PIO5 for TX, RX, CTS & RTS */
 	sysconf = *STX7105_SYSCONF_SYS_CFG35;
 	/* PIO5[0] CFG35[8,0]   AltFunction = 3 */

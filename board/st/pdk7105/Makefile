@@ -28,7 +28,7 @@ LIB	= $(obj)lib$(BOARD).a
 SOBJS-y	= init-$(BOARD).o
 
 COBJS-y	+= $(BOARD).o
-COBJS-$(CONFIG_CMD_NAND) += nand.o
+COBJS-$(CONFIG_CMD_NAND) += nand.o  swUpdate.o
 
 
 SRCS	:= $(SOBJS-y:.o=.S) $(COBJS-y:.o=.c)

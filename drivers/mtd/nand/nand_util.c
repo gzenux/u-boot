@@ -41,6 +41,8 @@
 
 #include <nand.h>
 #include <jffs2/jffs2.h>
+#include <asm/io.h>
+#include <asm/pio.h>
 
 typedef struct erase_info erase_info_t;
 typedef struct mtd_info	  mtd_info_t;
@@ -159,6 +161,19 @@ int nand_erase_opts(nand_info_t *meminfo, const nand_erase_options_t *opts)
 
 		WATCHDOG_RESET ();
 
+		if((erase.addr+0x80000) >0x10000000)/*over address space */
+			{
+				printf("Erase addr is over Nand flash address space(256MB)!!!\n");
+				break;
+			}
+		
+		if(((erase.addr+0x20000) >0x9b00000) && (erase_length==0x9a00000 ))/*up to push update filesystem */
+			{
+				printf("Erase addr is up to push update fs address space!erase_length=0x%x\n", erase_length);
+				break;
+			}
+
+
 		if (!opts->scrub && bbtest) {
 			int ret = meminfo->block_isbad(meminfo, erase.addr);
 			if (ret > 0) {
@@ -224,11 +239,11 @@ int nand_erase_opts(nand_info_t *meminfo, const nand_erase_options_t *opts)
 			if (percent != percent_complete) {
 				percent_complete = percent;
 
-				printf("\rErasing at 0x%x -- %3d%% complete.",
+				printf("\rErasing at 0x%x -- %3d%% complete.\n",
 				       erase.addr, percent);
 
 				if (opts->jffs2 && result == 0)
-					printf(" Cleanmarker written at 0x%x.",
+					printf(" Cleanmarker written at 0x%x.\n",
 					       erase.addr);
 			}
 		}
@@ -346,6 +361,10 @@ int nand_write_opts(nand_info_t *meminfo, const nand_write_options_t *opts)
 	if (opts->forcejffs2 || opts->forceyaffs) {
 		struct nand_oobinfo *oobsel =
 			opts->forcejffs2 ? &jffs2_oobinfo : &yaffs_oobinfo;
+	#ifdef CFG_NAND_YAFFS1_NEW_OOB_LAYOUT
+		/* jffs2_oobinfo matches 2.6.18+ MTD nand_oob_16 ecclayout */
+		oobsel = &jffs2_oobinfo;
+	#endif
 
 		if (meminfo->oobsize == 8) {
 			if (opts->forceyaffs) {
@@ -367,7 +386,7 @@ int nand_write_opts(nand_info_t *meminfo, const nand_write_options_t *opts)
 
 	/* check, if file is pagealigned */
 	if ((!opts->pad) && ((imglen % pagelen) != 0)) {
-		printf("Input block length is not page aligned\n");
+		printf("Input block length is not page aligned,imglen=%d, pagelen=%d\n",imglen, pagelen);
 		goto restoreoob;
 	}
 
@@ -447,6 +466,28 @@ int nand_write_opts(nand_info_t *meminfo, const nand_write_options_t *opts)
 			memcpy(oob_buf, buffer, meminfo->oobsize);
 			buffer += meminfo->oobsize;
 
+			if (opts->forceyaffs) {
+			#ifdef CFG_NAND_YAFFS1_NEW_OOB_LAYOUT
+				/* translate OOB for yaffs1 on Linux 2.6.18+ */
+				oob_buf[15] = oob_buf[12];
+				oob_buf[14] = oob_buf[11];
+				oob_buf[13] = (oob_buf[7] & 0x3f)
+					| (oob_buf[5] == 'Y' ? 0 : 0x80)
+					| (oob_buf[4] == 0 ? 0 : 0x40);
+				oob_buf[12] = oob_buf[6];
+				oob_buf[11] = oob_buf[3];
+				oob_buf[10] = oob_buf[2];
+				oob_buf[9]  = oob_buf[1];
+				oob_buf[8]  = oob_buf[0];
+				memset(oob_buf, 0xff, 8);
+			#else
+				/* set the ECC bytes to 0xff so MTD will
+				   calculate it */
+				int i;
+				for (i = 0; i < meminfo->oobinfo.eccbytes; i++)
+					oob_buf[meminfo->oobinfo.eccpos[i]] = 0xff;
+			#endif
+			}
 			/* write OOB data first, as ecc will be placed
 			 * in there*/
 			result = meminfo->write_oob(meminfo,
@@ -491,14 +532,19 @@ int nand_write_opts(nand_info_t *meminfo, const nand_write_options_t *opts)
 			 * on (slow) serial consoles
 			 */
 			if (percent != percent_complete) {
-				printf("\rWriting data at 0x%x "
-				       "-- %3d%% complete.",
-				       mtdoffset, percent);
-				percent_complete = percent;
+				percent_complete = percent;	
 			}
 		}
 
 		mtdoffset += meminfo->oobblock;
+		
+		if(opts->pad == 0 && (mtdoffset+0x800) > 0x9b00000) /*write.yaffs, not write.jffs2*/
+			{
+				printf("Write yaffs fs is  up to push fs!!mtdoffset=0x%x, opts->pad=%d\n", mtdoffset,opts->pad);
+				
+				/* return happy */
+				return 0;
+			}
 	}
 
 	if (!opts->quiet)

@@ -511,7 +511,8 @@ void reset_cmd_timeout(void)
 
 #define CTL_CH(c)		((c) - 'a' + 1)
 
-#define MAX_CMDBUF_SIZE		256
+//#define MAX_CMDBUF_SIZE		256
+#define MAX_CMDBUF_SIZE		1024
 
 #define CTL_BACKSPACE		('\b')
 #define DEL			((char)255)

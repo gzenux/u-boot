@@ -256,7 +256,12 @@ int usb_stor_scan(int mode)
 	if(usb_max_devs>0)
 		return 0;
 	else
-		return-1;
+		return -1;
+}
+
+extern int  GetStorageDevicesNum(void)
+{
+	return usb_max_devs;
 }
 
 static int usb_stor_irq(struct usb_device *dev)
@@ -556,6 +561,7 @@ int usb_stor_CBI_get_status (ccb * srb, struct us_data *us)
 	submit_int_msg (us->pusb_dev, us->irqpipe,
 			(void *) &us->ip_data, us->irqmaxp, us->irqinterval);
 	timeout = 1000;
+	//printf("[uboot_iptv]:usb_stor_CBI_get_status\n");	
 	while (timeout--) {
 		if ((volatile int *) us->ip_wanted == 0)
 			break;

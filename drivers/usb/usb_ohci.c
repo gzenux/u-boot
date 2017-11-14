@@ -174,6 +174,8 @@ int got_rhsc;
 /* device which was disconnected */
 struct usb_device *devgone;
 
+
+extern unsigned long cfg_7105_usb_ohci_regs;  //gongjia add
 /*-------------------------------------------------------------------------*/
 
 /* AMD-756 (D2 rev) reports corrupt register contents in some cases.
@@ -1497,7 +1499,7 @@ int submit_common_msg(struct usb_device *dev, unsigned long pipe, void *buffer,
 {
 	int stat = 0;
 	int maxsize = usb_maxpacket(dev, pipe);
-	int timeout;
+	int timeout,n;
 	urb_priv_t *urb;
 
 	urb = malloc(sizeof(urb_priv_t));
@@ -1554,6 +1556,7 @@ int submit_common_msg(struct usb_device *dev, unsigned long pipe, void *buffer,
 	for (;;) {
 		/* check whether the controller is done */
 		stat = hc_interrupt();
+		
 		if (stat < 0) {
 			stat = USB_ST_CRC_ERR;
 			break;
@@ -1572,19 +1575,20 @@ int submit_common_msg(struct usb_device *dev, unsigned long pipe, void *buffer,
 			/* 0xff is returned for an SF-interrupt */
 			break;
 		}
-
+		
 		if (--timeout) {
 #ifdef CONFIG_USB_AGGRESSIVE_MINIMAL_DELAYS
 			/* use units of 100us, instead of 1ms */
 			udelay(100);
 #else
 			wait_ms(1);
+			
 #endif	/* CONFIG_USB_AGGRESSIVE_MINIMAL_DELAYS */
 			if (!urb->finished)
 				dbg("\%");
 
 		} else {
-			err("CTL:TIMEOUT ");
+			err("[uboot_iptv]:CTL\n");
 			dbg("submit_common_msg: TO status %x\n", stat);
 			urb->finished = 1;
 			stat = USB_ST_CRC_ERR;
@@ -1663,9 +1667,11 @@ static int hc_reset (ohci_t *ohci)
 {
 	int timeout = 30;
 	int smm_timeout = 50; /* 0,5 sec */
-
+  
 	dbg("%s\n", __FUNCTION__);
-
+	
+    // printf("[uboot_iptv]:hc_reset\n");
+     
 	if (readl (&ohci->regs->control) & OHCI_CTRL_IR) { /* SMM owns the HC */
 		writel (OHCI_OCR, &ohci->regs->cmdstatus); /* request ownership */
 		info("USB HC TakeOver from SMM");
@@ -1878,7 +1884,10 @@ int usb_lowlevel_init(void)
 #ifdef CFG_USB_OHCI_CPU_INIT
 	/* cpu dependant init */
 	if(usb_cpu_init())
+	{
+	    printf("[uboot]:usb_cpu_init faild \n");
 		return -1;
+	}
 #endif
 
 #ifdef CFG_USB_OHCI_BOARD_INIT
@@ -1930,6 +1939,11 @@ int usb_lowlevel_init(void)
 		return -1;
 #else
 	gohci.regs = (struct ohci_regs *)CFG_USB_OHCI_REGS_BASE;
+	
+#ifdef CONFIG_SH_STB7100_USB
+	gohci.regs = (struct ohci_regs *)(cfg_7105_usb_ohci_regs);
+#endif
+
 #endif
 
 	gohci.flags = 0;

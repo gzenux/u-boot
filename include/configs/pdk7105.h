@@ -29,7 +29,6 @@
  * High Level Configuration Options
  * (easy to change)
  */
-
 #define CONFIG_SH4	1		/* This is an SH4 CPU		*/
 #define CONFIG_CPU_SUBTYPE_SH4_3XX	/* it is an SH4-300		*/
 
@@ -65,12 +64,14 @@
  * otherwise (e.g. for NOR/NAND Flash booting), do not define it.
  */
 #undef CFG_BOOT_FROM_SPI		/* define to build a SPI-bootable image */
+#define  CFG_BOOT_FROM_SPI
 
 
 /*-----------------------------------------------------------------------
  * Start addresses for the final memory configuration
  * Assume we run out of uncached memory for the moment
  */
+#define CFG_NAND_YAFFS_WRITE 
 
 #if defined(CFG_BOOT_FROM_SPI)		/* we are booting from SPI, so *DO* swap CSA and CSC with JE2 */
 #define CFG_EMI_SPI_BASE	0xA0000000	/* CSA: SPI Flash,  Physical 0x00000000 (64MiB) */
@@ -131,13 +132,24 @@
 		"monitor_len=" XSTR(CFG_MONITOR_LEN) "\0" \
 		"monitor_sec=" MONITOR_SECTORS "\0" \
 		"load_addr=" XSTR(CFG_LOAD_ADDR) "\0" \
-		"unprot=" \
-		  "protect off $monitor_sec\0" \
+		"ipaddr=192.9.150.61\0" \
+		"serverip=192.9.150.67\0" \
+		"bootdelay=0\0" \
+	"update_uboot=" \
+               "usb start;" \
+		  "fatload usb 0 80000000 u-boot.bin;" \
+                 "update_spi_uboot \0" \
+	"unprot=" \
+		"protect off $monitor_sec\0" \
 		"update=" \
 		  "erase $monitor_sec;" \
 		  "cp.b $load_addr $monitor_base $monitor_len;" \
-		  "protect on $monitor_sec\0"
+		  "protect on $monitor_sec\0" \
+		  "ethaddr=12:34:56:78:06:BD\0"\
+		  "bootcmd=nboot 80000000  0  100000;bootm 80000000\0"\
+		  "bootargs= console=ttyAS0,115200 root=/dev/mtdblock1 rootfstype=yaffs2 rw nwhwconf=device:eth0,hwaddr:10:08:E2:12:06:BD phyaddr:0,watchdog:5000 mem=120M bigphysarea=2048\0"
 
+//		  "bootargs= console=ttyAS0,115200 root=/dev/mtdblock1 rootfstype=jffs2 rw nwhwconf=device:eth0,hwaddr:10:08:E2:12:06:BD phyaddr:0,watchdog:5000 ip=192.168.111.111::192.168.10.1:255.255.255.0:7105_1::off mem=120M bigphysarea=2048\0"
 /*--------------------------------------------------------------
  * Command line configuration.
  */
@@ -195,7 +207,11 @@
  */
 #ifdef CONFIG_DRIVER_NET_STM_GMAC
 #	define CFG_STM_STMAC_BASE	0xfd110000ul	/* MAC = STM GMAC0 */
-#	define CONFIG_STMAC_KSZ8041FTL			/* PHY = Micrel KSZ8041FTL */
+//#	define CONFIG_STMAC_KSZ8041FTL			/* PHY = Micrel KSZ8041FTL */
+#     define CONFIG_CMD_MII
+#     define CONFIG_ETHADDR  DE:EA:FF:FF:01:01
+#     define CONFIG_STMAC_STE10XP  
+
 #else
 #	undef CONFIG_CMD_NET		/* undefine if no networking at all */
 #endif	/* CONFIG_DRIVER_NET_STM_GMAC */
@@ -222,10 +238,22 @@
 #	define CFG_USB0_BASE			0xfe100000	/* rear (adjacent to RJ-45) */
 #	define CFG_USB1_BASE			0xfea00000	/* front (near corner) */
 #	define CFG_USB_BASE			CFG_USB0_BASE
+//#	define CFG_USB_BASE			CFG_USB1_BASE
 #	define CONFIG_SH_STX_STX7105_USB_PORT0		/* enable Port #0 */
+//#	define CONFIG_SH_STX_STX7105_USB_PORT1		/* enable Port #1 */
 #	define CONFIG_SH_STX_STX7105_USB_OC	1	/* use overcurrent */
 #	define CONFIG_SH_STX_STX7105_USB_PW	1	/* use power control */
 #	define CFG_USB_OHCI_REGS_BASE		(CFG_USB_BASE+0xffc00)
+
+/* JGONG 0427 MASK
+#   define USB_EXT_REGS		(CFG_USB0_BASE+0xffc00)
+#   define USB_INT_REGS		(CFG_USB1_BASE+0xffc00)
+*/
+
+#   define USB_EXT_REGS		(CFG_USB1_BASE+0xffc00)
+#   define USB_INT_REGS		(CFG_USB0_BASE+0xffc00)
+
+
 #	define CFG_USB_OHCI_SLOT_NAME		"ohci"
 #	define CFG_USB_OHCI_MAX_ROOT_PORTS	1
 #	define LITTLEENDIAN
@@ -273,7 +301,7 @@
 #define CFG_HZ			1000		/* HZ for timer ticks	*/
 #define CFG_LOAD_ADDR		CFG_SDRAM_BASE	/* default load address		*/
 #define CFG_BOOTMAPSZ		(16 << 20)	/* initial linux memory size	*/
-#define CONFIG_BOOTDELAY	10		/* default delay before executing bootcmd */
+#define CONFIG_BOOTDELAY	0		/* default delay before executing bootcmd */
 #define CONFIG_ZERO_BOOTDELAY_CHECK
 
 #define CONFIG_CMDLINE_EDITING
@@ -289,7 +317,7 @@
  * Note: by default CONFIG_CMD_FLASH is defined in config_cmd_default.h
  */
 #undef CONFIG_CMD_FLASH		/* undefine it, define only if needed */
-#define CONFIG_CMD_FLASH	/* define for NOR flash */
+//#define CONFIG_CMD_FLASH	/* define for NOR flash */
 #define CONFIG_CMD_NAND		/* define for NAND flash */
 #define CONFIG_SPI_FLASH	/* define for SPI serial flash */
 
@@ -409,13 +437,13 @@
  * Address, size, & location of U-boot's Environment Sector
  */
 
-#define CFG_ENV_SIZE			0x4000	/* 16 KiB of environment data */
+#define CFG_ENV_SIZE			0x10000  /* 16 KiB of environment data */
 
 #if 1 && defined(CONFIG_CMD_FLASH)		/* NOR flash present ? */
 #	define CFG_ENV_IS_IN_FLASH		/* environment in NOR flash */
 #	define CFG_ENV_OFFSET	CFG_MONITOR_LEN	/* immediately after u-boot.bin */
 #	define CFG_ENV_SECT_SIZE	0x20000	/* 128 KiB Sector size */
-#elif 1 && defined(CONFIG_CMD_NAND)		/* NAND flash present ? */
+#elif 0 && defined(CONFIG_CMD_NAND)		/* NAND flash present ? */
 #	define CFG_ENV_IS_IN_NAND		/* environment in NAND flash */
 #	define CFG_ENV_OFFSET	CFG_NAND_ENV_OFFSET
 #	if CFG_ENV_SIZE < 0x20000		/* needs to be a multiple of block-size */
@@ -424,7 +452,7 @@
 #	endif /* if CFG_ENV_SIZE < 0x20000 */
 #elif 1 && defined(CONFIG_SPI_FLASH)		/* SPI serial flash present ? */
 #	define CFG_ENV_IS_IN_EEPROM		/* ENV is stored in SPI Serial Flash */
-#	define CFG_ENV_OFFSET	CFG_MONITOR_LEN	/* immediately after u-boot.bin */
+#	define CFG_ENV_OFFSET	      0x80000             //CFG_MONITOR_LEN	/* immediately after u-boot.bin */
 #else
 #	define CFG_ENV_IS_NOWHERE		/* ENV is stored in volatile RAM */
 #endif	/* CONFIG_CMD_NAND */
@@ -435,11 +463,17 @@
 
 #if 1 && (defined(CONFIG_CMD_FLASH) || defined(CONFIG_CMD_NAND))
 #	define CONFIG_CMD_JFFS2			/* enable JFFS2 support */
+
+#define CONFIG_JFFS2_DEV		"nand0"
+#define CONFIG_JFFS2_PART_SIZE		0x6400000
+#define CONFIG_JFFS2_PART_OFFSET	0x9b00000
+#define CONFIG_JFFS2_LZO_LZARI
 #endif
 
 #if defined(CONFIG_CMD_JFFS2)
-#	define CONFIG_JFFS2_CMDLINE		/* mtdparts command line support */
-#	define CONFIG_JFFS2_NAND		/* JFFS2 support on NAND Flash */
+//#	define CONFIG_JFFS2_CMDLINE		/* mtdparts command line support */
+#undef  CONFIG_JFFS2_CMDLINE		/* mtdparts command line support */
+#	define CONFIG_JFFS2_NAND	 1	/* JFFS2 support on NAND Flash */
 #	if defined(CONFIG_CMD_FLASH) && defined(CONFIG_CMD_NAND) /* Both NOR + NAND */
 #		define MTDPARTS_DEFAULT						\
 		"mtdparts="							\
