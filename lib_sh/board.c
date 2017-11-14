@@ -39,11 +39,6 @@
 #endif
 #include <asm/socregs.h>
 #include <asm/st40reg.h>
-#include <asm/stx7105reg.h>
-#include <asm/io.h>
-#include <asm/pio.h>
-#include <SvnVersion.h>
-#include <watchdog.h>
 
 extern ulong _uboot_end_data;
 extern ulong _uboot_end;
@@ -62,7 +57,6 @@ const char version_string[] =
  */
 
 #define	TOTAL_MALLOC_LEN	CFG_MALLOC_LEN
-#define	UPDATE_SW_OK 0
 
 static ulong mem_malloc_start;
 static ulong mem_malloc_end;
@@ -175,7 +169,6 @@ init_fnc_t *init_sequence[] = {
 	NULL,
 };
 
-#define smit_readl(addr)       (*(volatile unsigned int *)(addr))
 
 /* U-BOOT START */
 void start_sh4boot (void)
@@ -191,8 +184,6 @@ void start_sh4boot (void)
 
 	char *s, *e;
 	int i;
-	unsigned int regsvalue;
-	unsigned char SvnVersionInFlash[16] = {0};
 
 	addr = TEXT_BASE;
 	/* Reserve memory for malloc() arena. */
@@ -310,19 +301,6 @@ void start_sh4boot (void)
 #endif
 	eth_initialize(gd->bd);
 #endif
-	regsvalue = smit_readl(0xfe00112c);
-
-	/*0xb0000 --0xb0010  svn version*/
-	ReadSPIFlashDataToBuffer(0x97000, SvnVersionInFlash, 15);
-	SvnVersionInFlash[15] = 0;
-	printf("Svn Version: %s\n", SvnVersionInFlash);
-
-	if(0 != strncmp(CURRENTSVNVERSION, SvnVersionInFlash, strlen(CURRENTSVNVERSION))) {
-		memset(SvnVersionInFlash, 0, 16);
-		sprintf(SvnVersionInFlash, "%s", CURRENTSVNVERSION);
-		SvnVersionInFlash[15] = 0;
-		WriteSPIFlashDataFromBuffer(0x97000, SvnVersionInFlash, 16);
-	}
 
 	/* iptv project */
 	update_process();

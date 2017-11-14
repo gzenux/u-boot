@@ -273,7 +273,7 @@ __LIBS := $(subst $(obj),,$(LIBS))
 
 ALL += $(obj)u-boot.srec $(obj)u-boot.bin $(obj)System.map $(U_BOOT_NAND)
 
-all:	GENERATESVNVERSION	$(ALL)
+all:		$(ALL)
 
 $(obj)u-boot.hex:	$(obj)u-boot
 		$(OBJCOPY) ${OBJCFLAGS} -O ihex $< $@
@@ -293,9 +293,6 @@ $(obj)u-boot.img:	$(obj)u-boot.bin
 
 $(obj)u-boot.sha1:	$(obj)u-boot.bin
 		$(obj)tools/ubsha1 $(obj)u-boot.bin
-
-GENERATESVNVERSION:
-	echo "#define CURRENTSVNVERSION \"$(shell svnversion $(PWD))\"" > $(PWD)/include/SvnVersion.h
 
 $(obj)u-boot.dis:	$(obj)u-boot
 		$(OBJDUMP) -d $< > $@
