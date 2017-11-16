@@ -346,10 +346,10 @@ int cramfs_check (struct part_info *info)
 {
 	struct cramfs_super *sb;
 
-	if (info->dev->id->type != MTD_DEV_TYPE_NOR)
+	if ((info->dev->id->type != MTD_DEV_TYPE_NOR) ||
+	    !(sb = (struct cramfs_super *) PART_OFFSET(info)))
 		return 0;
 
-	sb = (struct cramfs_super *) PART_OFFSET(info);
 	if (sb->magic != CRAMFS_32 (CRAMFS_MAGIC)) {
 		/* check at 512 byte offset */
 		sb = (struct cramfs_super *) (PART_OFFSET(info) + 512);
