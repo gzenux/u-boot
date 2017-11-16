@@ -27,6 +27,11 @@
 #undef	_LINUX_CONFIG_H
 #define _LINUX_CONFIG_H 1	/* avoid reading Linux autoconf.h file	*/
 
+#ifdef __GNUC__
+#define inline		inline __attribute__((always_inline))
+#define __inline__	__inline__ __attribute__((always_inline))
+#endif
+
 typedef unsigned char		uchar;
 typedef volatile unsigned long	vu_long;
 typedef volatile unsigned short vu_short;
