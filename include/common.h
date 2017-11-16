@@ -31,6 +31,7 @@
 #define inline		inline __attribute__((always_inline))
 #define __inline__	__inline__ __attribute__((always_inline))
 #endif
+#define __weak		__attribute__((weak))
 
 typedef unsigned char		uchar;
 typedef volatile unsigned long	vu_long;
