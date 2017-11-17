@@ -2,12 +2,12 @@
 Copyright (c) 2010 Shenzhen State Micro Technology Co., Ltd.
 All right reserved.
 
-Author: jiagong	
+Author: jiagong
 Date  : 2010-06-14
 
 *********************************************************************************/
 
-/* 
+/*
 * Description:
 * internal usb mass storage  partitions:
 *  ________________________________________...............
@@ -30,7 +30,7 @@ Date  : 2010-06-14
 #include "algorithm_error.h"
 
 
-unsigned long cfg_7105_usb_ohci_regs;    
+unsigned long cfg_7105_usb_ohci_regs;
 extern int dev_index;
 
 // 32-bit integer manipulation macros (big endian)
@@ -80,7 +80,7 @@ extern int dev_index;
 /////////////////////////////////////////////////////
 //////////////////////inner//////////////////////////
 /////////////////////////////////////////////////////
-// sha1 context structure 
+// sha1 context structure
 
 
 typedef struct
@@ -104,7 +104,7 @@ static void sha1_starts( sha1_context *ctx )
 	ctx->state[4] = 0xC3D2E1F0;
 }
 
-//sha1 
+//sha1
 static void sha1_process( sha1_context *ctx, unsigned char data[64] )
 {
 	unsigned long temp, W[16], A, B, C, D, E;
@@ -311,12 +311,12 @@ static void sha1_update( sha1_context *ctx, unsigned char *input,  unsigned long
 
 
 // SHA-1 final digest
-static unsigned long  sha1_finish( sha1_context *ctx,unsigned char *output )
+static unsigned long sha1_finish( sha1_context *ctx,unsigned char *output )
 {
 	unsigned long last, padn;
 	unsigned long high, low;
 	unsigned char msglen[8];
-	unsigned char sha_padding[64] ={0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	unsigned char sha_padding[64] = {0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -362,7 +362,7 @@ static void sha1( unsigned char *input, unsigned long  ilen, unsigned char outpu
 unsigned long soft_sha_1(unsigned char *i_pdata, unsigned long  i_udatalen,
 						 unsigned char *o_pdata)
 {
-	sha1(i_pdata, i_udatalen, o_pdata );  
+	sha1(i_pdata, i_udatalen, o_pdata);
 
 	return 0;
 }
@@ -499,40 +499,40 @@ typedef struct PIXER_COLOR
 #define GDP3_NODE_BOTTOM_ADDRESS	    0x98310100
 #define GDP3_NODE_BOTTOM_PHY_ADDRESS	0x48310100
 
-typedef unsigned char   BYTE;    
-typedef unsigned short  WORD;    
-typedef unsigned int    DWORD;    
-typedef unsigned int    LONG;    
+typedef unsigned char   BYTE;
+typedef unsigned short  WORD;
+typedef unsigned int    DWORD;
+typedef unsigned int    LONG;
 
 
-typedef struct tagBITMAPFILEHEADER {     
-	WORD    bfType;     
-	DWORD   bfSize;     
-	WORD    bfReserved1;     
-	WORD    bfReserved2;     
-	DWORD   bfOffBits;     
-} BITMAPFILEHEADER, *PBITMAPFILEHEADER;     
+typedef struct tagBITMAPFILEHEADER {
+	WORD    bfType;
+	DWORD   bfSize;
+	WORD    bfReserved1;
+	WORD    bfReserved2;
+	DWORD   bfOffBits;
+} BITMAPFILEHEADER, *PBITMAPFILEHEADER;
 
-typedef struct tagBITMAPINFOHEADER{    
-	DWORD  biSize;     
-	LONG   biwidth;     
-	LONG   biheight;     
-	WORD   biPlanes;     
-	WORD   biBitCount;     
-	DWORD  biCompression;     
-	DWORD  biSizeImage;     
-	LONG   biXPelsPerMeter;     
-	LONG   biYPelsPerMeter;     
-	DWORD  biClrUsed;     
-	DWORD  biClrImportant;     
-} BITMAPINFOHEADER, *PBITMAPINFOHEADER;     
+typedef struct tagBITMAPINFOHEADER{
+	DWORD  biSize;
+	LONG   biwidth;
+	LONG   biheight;
+	WORD   biPlanes;
+	WORD   biBitCount;
+	DWORD  biCompression;
+	DWORD  biSizeImage;
+	LONG   biXPelsPerMeter;
+	LONG   biYPelsPerMeter;
+	DWORD  biClrUsed;
+	DWORD  biClrImportant;
+} BITMAPINFOHEADER, *PBITMAPINFOHEADER;
 
-typedef struct tagRGBQUAD {    
-	BYTE    rgbBlue;     
-	BYTE    rgbGreen;     
-	BYTE    rgbRed;     
-	BYTE    rgbReserved;     
-} RGBQUAD;     
+typedef struct tagRGBQUAD {
+	BYTE    rgbBlue;
+	BYTE    rgbGreen;
+	BYTE    rgbRed;
+	BYTE    rgbReserved;
+} RGBQUAD;
 
 static unsigned int image_data[]=
 {
@@ -7362,838 +7362,838 @@ static unsigned int image_data[]=
 static  void smit_480cfg_logo_init()
 {
 
-	#if (COLORTYPE==ARGB8888)
-		stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x00 , 0x80000005);
-	#else
-		stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x00 , 0x80000000);
-	#endif
+#if (COLORTYPE==ARGB8888)
+	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x00 , 0x80000005);
+#else
+	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x00 , 0x80000000);
+#endif
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x04 , 0x00808080);
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x08 , 0x00000100);
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x0c , /*0x0007007a*/0x0025007a);
-	
+
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x10 , /*0x01e60349*/0x02040349);
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x14 , HD_PIC_LAOD_PHY_ADDRESS);
-	#if (COLORTYPE==ARGB8888)
+#if (COLORTYPE==ARGB8888)
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x18 , 0x00000b40);
-	#else
+#else
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x18 , 0x000005a0);//GR Test adeed
-	#endif
+#endif
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x1c , 0x01E002d0);
-	
+
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x20 , 0x00000100);
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x24 , GDP1_NODE_TOP_PHY_ADDRESS);
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x28 , 0x00000000);
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x2c , 0x00000000);
-	
+
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x30 , 0x48000fc0);
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x34 , 0x00000000);
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x38 , 0x480011a0);
 	stsys_WRITEREGDEV32LE(GDP1_NODE_TOP_ADDRESS + 0x3c , 0x8092226c);
-	
-	
-	#if (COLORTYPE==ARGB8888)
+
+
+#if (COLORTYPE==ARGB8888)
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x00 , 0x80000005);
-	#else
+#else
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x00 , 0x80000000);//GR Test added
-	#endif
+#endif
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x04 , 0x00808080);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x08 , 0x00000000);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x0c , /*0x0007007b*/0x00250078);
-	
+
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x10 , /*0x01e5034a*/0x02030347);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x14 , SD_PIC_LAOD_PHY_ADDRESS);
-	#if (COLORTYPE==ARGB8888)
+#if (COLORTYPE==ARGB8888)
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x18 , 0x00001680);
-	#else
+#else
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x18 , 0x00000b40);//GR Test adeed
-	#endif
+#endif
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x1c , 0x01e002d0);
-	
+
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x20 , 0x00000000);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x24 , GDP3_NODE_BOTTOM_PHY_ADDRESS);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x28 , 0x00000000);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x2c , 0x00000000);
-	
-	
+
+
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x30 , 0x00000000);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x34 , 0x00000000);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x38 , 0x00000000);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_TOP_ADDRESS + 0x3c , 0x00000000);
-	
-	
-	#if (COLORTYPE==ARGB8888)
+
+
+#if (COLORTYPE==ARGB8888)
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x00 , 0x80000005);
-	#else
+#else
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x00 , 0x80000000);//GR Tst added
-	#endif
+#endif
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x04 , 0x00808080);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x08 , 0x01000100);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x0c , /*0x0007007b*/0x00260078);
-	
+
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x10 , /*0x01e6034a*/0x02040347);
-	#if (COLORTYPE==ARGB8888)
+#if (COLORTYPE==ARGB8888)
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x14 , SD_PIC_LAOD_PHY_ADDRESS+0xb40);
-	#else
+#else
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x14 , SD_PIC_LAOD_PHY_ADDRESS+0x5a0);//GR
-	#endif
-	
-	#if (COLORTYPE==ARGB8888)
+#endif
+
+#if (COLORTYPE==ARGB8888)
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x18 , 0x00001680);
-	#else
+#else
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x18 , 0x00000b40);//GR Test added
-	#endif
-	
+#endif
+
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x1c , 0x01e002d0);
-	
+
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x20 , 0x00000100);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x24 , GDP3_NODE_TOP_PHY_ADDRESS);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x28 , 0x00000000);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x2c , 0x00000000);
-	
-	
+
+
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x30 , 0x00000000);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x34 , 0x00000000);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x38 , 0x00000000);
 	stsys_WRITEREGDEV32LE(GDP3_NODE_BOTTOM_ADDRESS + 0x3c , 0x00000000);
 
-	    WriteRegister((volatile ULONG *)0xfe000010,0x0000c0de);
-        WriteRegister((volatile ULONG *)0xfe0000b8,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe030810,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe20ac34,0x00003aa1);
-        WriteRegister((volatile ULONG *)0xfe20ad34,0x0000002a);
-        WriteRegister((volatile ULONG *)0xfe20a1fc,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe20a1ec,0x00000006);
-        WriteRegister((volatile ULONG *)0xfe20a1f0,0x00000005);
-        WriteRegister((volatile ULONG *)0xfe20a1f4,0x00000003);
-        WriteRegister((volatile ULONG *)0xfe20a1f8,0x00000003);
-        WriteRegister((volatile ULONG *)0xfe20a1fc,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe20a2fc,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe20a2ec,0x00000006);
-        WriteRegister((volatile ULONG *)0xfe20a2f0,0x00000005);
-        WriteRegister((volatile ULONG *)0xfe20a2f4,0x00000003);
-        WriteRegister((volatile ULONG *)0xfe20a2f8,0x00000003);
-        WriteRegister((volatile ULONG *)0xfe20a2fc,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe20a3fc,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe20a3ec,0x00000006);
-        WriteRegister((volatile ULONG *)0xfe20a3f0,0x00000005);
-        WriteRegister((volatile ULONG *)0xfe20a3f4,0x00000003);
-        WriteRegister((volatile ULONG *)0xfe20a3f8,0x00000003);
-        WriteRegister((volatile ULONG *)0xfe20a3fc,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe002000,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe002100,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe0020b0,0x000000a3);
-        WriteRegister((volatile ULONG *)0xfe00212c,0x478abc10);
-        WriteRegister((volatile ULONG *)0xfe002130,0x41fdbb70);
-        WriteRegister((volatile ULONG *)0xfe002230,0x20201004);
-        WriteRegister((volatile ULONG *)0xfe002238,0x000101c4);
-        WriteRegister((volatile ULONG *)0xfe002240,0x478abe08);
-        WriteRegister((volatile ULONG *)0xfe00224c,0x00000100);
-        WriteRegister((volatile ULONG *)0xfe002250,0x00000100);
-        WriteRegister((volatile ULONG *)0xfe002228,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe002208,0x00004000);
-        WriteRegister((volatile ULONG *)0xfe002208,0x00004000);
-        WriteRegister((volatile ULONG *)0xfe002220,0x4767e408);
-        WriteRegister((volatile ULONG *)0xfe002208,0x00004010);
-        WriteRegister((volatile ULONG *)0xfe002208,0x00004010);
-        WriteRegister((volatile ULONG *)0xfe002228,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe002208,0x00004000);
-        WriteRegister((volatile ULONG *)0xfe002220,0x4767e408);
-        WriteRegister((volatile ULONG *)0xfe002208,0x00004010);
-        WriteRegister((volatile ULONG *)0xfe00222c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe002234,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe00222c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe002238,0x000101c4);
-        WriteRegister((volatile ULONG *)0xfe00223c,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe002200,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe003000,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe003100,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe00312c,0x478ab810);
-        WriteRegister((volatile ULONG *)0xfe003130,0x41fdbd70);
-        WriteRegister((volatile ULONG *)0xfe20a0ec,0x00000006);
-        WriteRegister((volatile ULONG *)0xfe20a0f0,0x00000005);
-        WriteRegister((volatile ULONG *)0xfe20a0f4,0x00000003);
-        WriteRegister((volatile ULONG *)0xfe20a0f8,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe20a0fc,0x00000003);
-        WriteRegister((volatile ULONG *)0xfe030800,0x00000048);
-        WriteRegister((volatile ULONG *)0xfe030400,0x00000870);
-        WriteRegister((volatile ULONG *)0xfe030408,0x00000260);
-        WriteRegister((volatile ULONG *)0xfd104e08,0x00000039);
-        WriteRegister((volatile ULONG *)0xfd104e00,0x00000a50);
-        WriteRegister((volatile ULONG *)0xfd104e40,0x00000002);
-        WriteRegister((volatile ULONG *)0xfd104e00,0x00000a50);
-        WriteRegister((volatile ULONG *)0xfd104000,0x00000000);
-        WriteRegister((volatile ULONG *)0xfd10400c,0xffffffff);
-        WriteRegister((volatile ULONG *)0xfd104110,0x00000000);
-        WriteRegister((volatile ULONG *)0xfd104114,0x00000000);
-        WriteRegister((volatile ULONG *)0xfd104118,0x00000060);
-        WriteRegister((volatile ULONG *)0xfe001108,0x0c000000);
-        WriteRegister((volatile ULONG *)0xfe210000,0x00007ff6);
-        WriteRegister((volatile ULONG *)0xfe21001c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe210018,0x00000004);
-        WriteRegister((volatile ULONG *)0xfe210010,0x000000f3);
-        WriteRegister((volatile ULONG *)0xfe210014,0x00003c00);
-        WriteRegister((volatile ULONG *)0xfe21001c,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe210000,0x00007ffe);
-        WriteRegister((volatile ULONG *)0xfe21002c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe210028,0x00000004);
-        WriteRegister((volatile ULONG *)0xfe210020,0x000000f3);
-        WriteRegister((volatile ULONG *)0xfe210024,0x00003c00);
-        WriteRegister((volatile ULONG *)0xfe21002c,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe210000,0x00007ffe);
-        WriteRegister((volatile ULONG *)0xfe21003c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe210038,0x00000004);
-        WriteRegister((volatile ULONG *)0xfe210030,0x000000f3);
-        WriteRegister((volatile ULONG *)0xfe210034,0x00003c00);
-        WriteRegister((volatile ULONG *)0xfe21003c,0x00000001);
-        WriteRegister((volatile ULONG *)0xfd104200,0x00001002);
-        WriteRegister((volatile ULONG *)0xfd104004,0x00000011);
-        WriteRegister((volatile ULONG *)0xfe030900,0x00000649);
-        WriteRegister((volatile ULONG *)0xfd104004,0x00000011);
-        WriteRegister((volatile ULONG *)0xfd104000,0x00000000);
-        WriteRegister((volatile ULONG *)0xfd104200,0x003d1002);
-        WriteRegister((volatile ULONG *)0xfd104244,0x0000000f);
-        WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
-        WriteRegister((volatile ULONG *)0xfe001108,0x0c000000);
-        WriteRegister((volatile ULONG *)0xfd104200,0x003d1002);
-        WriteRegister((volatile ULONG *)0xfd104244,0x0000000f);
-        WriteRegister((volatile ULONG *)0xfd104400,0x00001800);
-        WriteRegister((volatile ULONG *)0xfe030900,0x00000448);
-        WriteRegister((volatile ULONG *)0xfd104020,0x00004807);
-        WriteRegister((volatile ULONG *)0xfd104200,0x003d1002);
-        WriteRegister((volatile ULONG *)0xfd104244,0x0000000f);
-        WriteRegister((volatile ULONG *)0xfd104020,0x00004807);
-        WriteRegister((volatile ULONG *)0xfd104200,0x003d1002);
-        WriteRegister((volatile ULONG *)0xfd104020,0x00004807);
-        WriteRegister((volatile ULONG *)0xfe030980,0x00000448);
-        WriteRegister((volatile ULONG *)0xfe20ba00,0x80000000);
-        WriteRegister((volatile ULONG *)0xfe20ba00,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe20bb04,0x00000005);
-        WriteRegister((volatile ULONG *)0xfe20bb08,0x00000003);
-        WriteRegister((volatile ULONG *)0xfe20bb0c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe20bb10,0x00000002);
-        WriteRegister((volatile ULONG *)0xfe20bb24,0x00000005);
-        WriteRegister((volatile ULONG *)0xfe20bb28,0x00000003);
-        WriteRegister((volatile ULONG *)0xfe20bb2c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe20bb30,0x00000002);
-        WriteRegister((volatile ULONG *)0xfe20bb44,0x00000005);
-        WriteRegister((volatile ULONG *)0xfe20bb48,0x00000003);
-        WriteRegister((volatile ULONG *)0xfe20bb4c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe20bb50,0x00000002);
-        WriteRegister((volatile ULONG *)0xfe20bb84,0x00000005);
-        WriteRegister((volatile ULONG *)0xfe20bb88,0x00000003);
-        WriteRegister((volatile ULONG *)0xfe20bb8c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe20bb90,0x00000002);
-        WriteRegister((volatile ULONG *)0xfe20ba60,0x80c00003);
-        WriteRegister((volatile ULONG *)0xfe20ba64,0x41085000);
-        WriteRegister((volatile ULONG *)0xfe20ba70,0x80c00002);
-        WriteRegister((volatile ULONG *)0xfe20ba74,0x410b5000);
-        WriteRegister((volatile ULONG *)0xfe20ba80,0x80c00001);
-        WriteRegister((volatile ULONG *)0xfe20ba84,0x410e5000);
-        WriteRegister((volatile ULONG *)0xfe030980,0x00000148);
-        WriteRegister((volatile ULONG *)0xfe030900,0x00000148);
-        WriteRegister((volatile ULONG *)0xfe030900,0x00000148);
-        WriteRegister((volatile ULONG *)0xfe030980,0x00000148);
-        WriteRegister((volatile ULONG *)0xfe20ac04,0x00101060);
-        WriteRegister((volatile ULONG *)0xfe20ac00,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe20ac28,0x0007007a);
-        WriteRegister((volatile ULONG *)0xfe20ac2c,0x02040349);
-        WriteRegister((volatile ULONG *)0xfe20ac04,0x00101060);
-        WriteRegister((volatile ULONG *)0xfe20ac0c,0x0025007a);
-        WriteRegister((volatile ULONG *)0xfe20ac10,0x02040349);
-        WriteRegister((volatile ULONG *)0xfe20ac00,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe20ac38,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe000010,0x0000c0de);
-        WriteRegister((volatile ULONG *)0xfe0000a4,0x00003411);
-        WriteRegister((volatile ULONG *)0xfe030404,0x0000008a);
-        WriteRegister((volatile ULONG *)0xfe030800,0x00000048);
-        WriteRegister((volatile ULONG *)0xfe030b00,0x00000903);
-        WriteRegister((volatile ULONG *)0xfe030b04,0x00000f1a);
-        WriteRegister((volatile ULONG *)0xfe030b08,0x0000013a);
-        WriteRegister((volatile ULONG *)0xfe030b0c,0x00001805);
-        WriteRegister((volatile ULONG *)0xfe030b10,0x00000903);
-        WriteRegister((volatile ULONG *)0xfe030b14,0x00000c3c);
-        WriteRegister((volatile ULONG *)0xfe030b18,0x0000003a);
-        WriteRegister((volatile ULONG *)0xfe030b1c,0x00001a06);
-        WriteRegister((volatile ULONG *)0xfe030b20,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b24,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b28,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b2c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b30,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b34,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b38,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b3c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b40,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b44,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b48,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b4c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b50,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b54,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b58,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b5c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b60,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b64,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b68,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b6c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b70,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b74,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b78,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b7c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b80,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b84,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b88,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b8c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b90,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b94,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b98,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030b9c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030ba0,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030ba4,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030ba8,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bac,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bb0,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bb4,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bb8,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bbc,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bc0,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bc4,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bc8,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bcc,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bd0,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bd4,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bd8,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bdc,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030be0,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030be4,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030be8,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bec,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bf0,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bf4,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bf8,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030bfc,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030800,0x68000048);
-        WriteRegister((volatile ULONG *)0xfe000020,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe000024,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe000018,0xfffffff1);
-        WriteRegister((volatile ULONG *)0xfe00001c,0x00001c72);
-        WriteRegister((volatile ULONG *)0xfe000020,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe030324,0x00000200);
-        WriteRegister((volatile ULONG *)0xfe030328,0x0000035a);
-        WriteRegister((volatile ULONG *)0xfe030340,0x0000041a);
-        WriteRegister((volatile ULONG *)0xfe03032c,0x00360352);
-        WriteRegister((volatile ULONG *)0xfe030330,0x0006020d);
-        WriteRegister((volatile ULONG *)0xfe030334,0x0006020d);
-        WriteRegister((volatile ULONG *)0xfe030338,0x03520352);
-        WriteRegister((volatile ULONG *)0xfe03033c,0x03520352);
-        WriteRegister((volatile ULONG *)0xfe03035c,0x003e0000);
-        WriteRegister((volatile ULONG *)0xfe030360,0x00070001);
-        WriteRegister((volatile ULONG *)0xfe030364,0x00070001);
-        WriteRegister((volatile ULONG *)0xfe030368,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe03036c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe03037c,0x00060044);
-        WriteRegister((volatile ULONG *)0xfe030380,0x00010007);
-        WriteRegister((volatile ULONG *)0xfe030384,0x00010007);
-        WriteRegister((volatile ULONG *)0xfe030388,0x00060006);
-        WriteRegister((volatile ULONG *)0xfe03038c,0x00060006);
-        WriteRegister((volatile ULONG *)0xfe030324,0x00000200);
-        WriteRegister((volatile ULONG *)0xfe030398,0x00000018);
-        WriteRegister((volatile ULONG *)0xfe030324,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe030348,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe0000a4,0x00003411);
-        WriteRegister((volatile ULONG *)0xfd104e08,0x00000939);
-        WriteRegister((volatile ULONG *)0xfe030408,0x00000260);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfd104e04,0x0000003b);
-        WriteRegister((volatile ULONG *)0xfe030814,0x01ed0005);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe030840,0x01ed0005);
-        WriteRegister((volatile ULONG *)0xfe030818,0x00fc827f);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03081c,0x008fe20b);
-        WriteRegister((volatile ULONG *)0xfe030820,0x00f684fc);
-        WriteRegister((volatile ULONG *)0xfe030824,0x050f7c24);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe030828,0x00f4857c);
-        WriteRegister((volatile ULONG *)0xfe03082c,0x0a1f402e);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe030830,0x00fa027f);
-        WriteRegister((volatile ULONG *)0xfe030834,0x0e076e1d);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe030844,0x00fc827f);
-        WriteRegister((volatile ULONG *)0xfe030848,0x008fe20b);
-        WriteRegister((volatile ULONG *)0xfe03084c,0x00f684fc);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe030850,0x050f7c24);
-        WriteRegister((volatile ULONG *)0xfe030854,0x00f4857c);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe030858,0x0a1f402e);
-        WriteRegister((volatile ULONG *)0xfe03085c,0x00fa027f);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe030860,0x0e076e1d);
-        WriteRegister((volatile ULONG *)0xfe030800,0x68000048);
-        WriteRegister((volatile ULONG *)0xfe030808,0x00d20278);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03080c,0x00d20278);
-        WriteRegister((volatile ULONG *)0xfe030838,0x00d20278);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe030800,0x68000349);
-        WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe030400,0x00000070);
-        WriteRegister((volatile ULONG *)0xfe030900,0x00000349);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe20a124,GDP1_NODE_TOP_PHY_ADDRESS);
-        WriteRegister((volatile ULONG *)0xfe20ac00,0x00000009);
-        WriteRegister((volatile ULONG *)0xfe20ac38,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe20ad04,0x00101060);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfd104004,0x00000011);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfd104000,0x00000000);
-        WriteRegister((volatile ULONG *)0xfd104200,0x003d1002);
-        WriteRegister((volatile ULONG *)0xfe000010,0x0000c0de);
-        WriteRegister((volatile ULONG *)0xfe0000a4,0x00001611);
-        WriteRegister((volatile ULONG *)0xfe000068,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfd104244,0x0000000f);
-        WriteRegister((volatile ULONG *)0xfe00006c,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe000060,0xfffffff1);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe000064,0x00001c72);
-        WriteRegister((volatile ULONG *)0xfe000068,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
-        WriteRegister((volatile ULONG *)0xfe001108,0x0c000000);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe0000a8,0x00000006);
-        WriteRegister((volatile ULONG *)0xfd104e04,0x00000011);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe030800,0x68000349);
-        WriteByteRegister((volatile UCHAR *)0xfe0301a8,0x1d);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe030044,0x75);
-        WriteByteRegister((volatile UCHAR *)0xfe030048,0xd8);
-        WriteRegister((volatile ULONG *)0xfd104004,0x00000011);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe030048,0xd7);
-        WriteByteRegister((volatile UCHAR *)0xfe03004c,0x9e);
-        WriteByteRegister((volatile UCHAR *)0xfe0301ac,0x1e);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe03017c,0x17);
-        WriteRegister((volatile ULONG *)0xfd104000,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe20ad00,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe20ad28,0x00050077);
-        WriteRegister((volatile ULONG *)0xfe20ad2c,0x02050346);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfd104200,0x003d1002);
-        WriteRegister((volatile ULONG *)0xfe20ad04,0x00101060);
-        WriteRegister((volatile ULONG *)0xfe20ad0c,0x00260077);
-        WriteRegister((volatile ULONG *)0xfe20ad10,0x02050346);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfd104244,0x0000000f);
-        WriteRegister((volatile ULONG *)0xfe20ad00,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe20ad38,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe000068,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe00006c,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe000060,0xfffffff1);
-        WriteRegister((volatile ULONG *)0xfe000064,0x00001c72);
-        WriteRegister((volatile ULONG *)0xfe000068,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
-        WriteRegister((volatile ULONG *)0xfe001108,0x0c000000);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe001104,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe001108,0x08060000);
-        WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
-        WriteRegister((volatile ULONG *)0xfe030224,0x00000200);
-        WriteRegister((volatile ULONG *)0xfe030228,0x0000035a);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe030240,0x0000020d);
-        WriteRegister((volatile ULONG *)0xfe03022c,0x003a0356);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe030230,0x0107ffff);
-        WriteRegister((volatile ULONG *)0xfe030234,0xffff0106);
-        WriteRegister((volatile ULONG *)0xfe030238,0x01a9ffff);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03023c,0xffff0356);
-        WriteRegister((volatile ULONG *)0xfe03025c,0x0000003e);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe00110c,0x32645000);
-        WriteRegister((volatile ULONG *)0xfe00110c,0x32645800);
-        WriteRegister((volatile ULONG *)0xfe030260,0x00010004);
-        WriteRegister((volatile ULONG *)0xfe030264,0x00000003);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe030268,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe03026c,0x01ad01ad);
-        WriteRegister((volatile ULONG *)0xfe03027c,0x003e0000);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfd104014,0x00000002);
-        WriteRegister((volatile ULONG *)0xfd104018,0x00000032);
-        WriteRegister((volatile ULONG *)0xfe030280,0x00040001);
-        WriteRegister((volatile ULONG *)0xfe030284,0x00030000);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfd104100,0x0000007b);
-        WriteRegister((volatile ULONG *)0xfd104104,0x0000034a);
-        WriteRegister((volatile ULONG *)0xfd104108,0x00000025);
-        WriteRegister((volatile ULONG *)0xfe030288,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe03028c,0x01ad01ad);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe030224,0x00000200);
-        WriteRegister((volatile ULONG *)0xfe030298,0x00000018);
-        WriteRegister((volatile ULONG *)0xfe030224,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe030248,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe03001c,0x00);
-        WriteByteRegister((volatile UCHAR *)0xfe030000,0x96);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe030004,0x46);
-        WriteRegister((volatile ULONG *)0xfd10410c,0x00000204);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe030008,0x60);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfd10400c,0xffffffff);
-        WriteRegister((volatile ULONG *)0xfd104004,0x000001df);
-        WriteRegister((volatile ULONG *)0xfd104000,0x00000c1b);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe03000c,0x08);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfd10400c,0x00000041);
-        WriteRegister((volatile ULONG *)0xfd104000,0x80000c1b);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe030010,0x08);
-        WriteByteRegister((volatile UCHAR *)0xfe030014,0x00);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe030020,0x24);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe030018,0x91);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe030170,0x48);
-        WriteByteRegister((volatile UCHAR *)0xfe030174,0x38);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe030178,0x08);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfd10400c,0x00000041);
-        WriteRegister((volatile ULONG *)0xfd10400c,0x00000003);
-        WriteRegister((volatile ULONG *)0xfd104000,0x00000c1b);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe030020,0x24);
-        WriteByteRegister((volatile UCHAR *)0xfe030100,0x10);
-        WriteRegister((volatile ULONG *)0xfd10400c,0x00000041);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe030104,0x09);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe030088,0x40);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe03008c,0x00);
-        WriteByteRegister((volatile UCHAR *)0xfe030090,0x00);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe030094,0x00);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe030098,0x00);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe03009c,0x00);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a0,0x00);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe030144,0x32);
-        WriteByteRegister((volatile UCHAR *)0xfe030120,0x20);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe030114,0x80);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe03011c,0x80);
-        WriteByteRegister((volatile UCHAR *)0xfe030118,0x00);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0301a4,0x80);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe030034,0x35);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe0301a8,0x1d);
-        WriteByteRegister((volatile UCHAR *)0xfe030044,0x75);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe030048,0xd8);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe030048,0xd7);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe03004c,0x9e);
-        WriteByteRegister((volatile UCHAR *)0xfe0301ac,0x1e);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe03017c,0x17);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe030018,0x10);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe0301a8,0x1d);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe03007c,0x00);
-        WriteByteRegister((volatile UCHAR *)0xfe030080,0x00);
-        WriteByteRegister((volatile UCHAR *)0xfe030084,0x18);
-        WriteByteRegister((volatile UCHAR *)0xfe03000c,0x28);
-        WriteRegister((volatile ULONG *)0xfd10400c,0x00000041);
-        WriteRegister((volatile ULONG *)0xfd104210,0x000d0282);
-        WriteRegister((volatile ULONG *)0xfd104214,0x40080024);
-        WriteRegister((volatile ULONG *)0xfd104218,0x00000003);
-        WriteRegister((volatile ULONG *)0xfd10421c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfd104220,0x00000000);
-        WriteRegister((volatile ULONG *)0xfd104224,0x00000000);
-        WriteRegister((volatile ULONG *)0xfd104228,0x00000000);
-        WriteRegister((volatile ULONG *)0xfd10422c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfd104230,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000018);
-        WriteRegister((volatile ULONG *)0xfd10400c,0x00000045);
-        WriteRegister((volatile ULONG *)0xfd104210,0x000d0282);
-        WriteRegister((volatile ULONG *)0xfd104214,0x40080024);
-        WriteRegister((volatile ULONG *)0xfd104218,0x00000003);
-        WriteRegister((volatile ULONG *)0xfd10421c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfd104220,0x00000000);
-        WriteRegister((volatile ULONG *)0xfd104224,0x00000000);
-        WriteRegister((volatile ULONG *)0xfd104228,0x00000000);
-        WriteRegister((volatile ULONG *)0xfd10422c,0x00000000);
-        WriteRegister((volatile ULONG *)0xfd104230,0x00000001);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x01);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x08);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x40);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x8f);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe030044,0x75);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x01);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x08);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe030048,0xd7);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x40);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe030048,0xd7);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x8f);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x01);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x08);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe03004c,0x9e);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x40);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe0301ac,0x1e);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x8f);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x01);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x08);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteByteRegister((volatile UCHAR *)0xfe03017c,0x17);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x40);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x8f);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfd104e00,0x00000850);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x01);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x08);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x40);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x8f);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe20a324,GDP3_NODE_TOP_PHY_ADDRESS);
-        WriteRegister((volatile ULONG *)0xfe0000a8,0x00000007);
-        WriteRegister((volatile ULONG *)0xfe20ad00,0x00000021);
-        WriteRegister((volatile ULONG *)0xfe20ad38,0x00000000);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000018);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x01);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x08);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x40);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000018);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000018);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x8f);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x01);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x08);        
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x40);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
-        WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x8f);
-        WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);        
-        
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);        
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        
-        WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
-        WriteRegister((volatile ULONG *)0xfe001108,0x0c000000);
-        WriteRegister((volatile ULONG *)0xfe001108,0x08060000);
-        WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
-        WriteRegister((volatile ULONG *)0xfe00110c,0x32645000);
-        WriteRegister((volatile ULONG *)0xfe00110c,0x32645800);
-        
-        WriteRegister((volatile ULONG *)0xfd104014,0x00000002);
-        WriteRegister((volatile ULONG *)0xfd104018,0x00000032);
-        WriteRegister((volatile ULONG *)0xfd104100,0x0000007b);
-        WriteRegister((volatile ULONG *)0xfd104104,0x0000034a);
-        WriteRegister((volatile ULONG *)0xfd104108,0x00000025);
-        WriteRegister((volatile ULONG *)0xfd10410c,0x00000204);
-        WriteRegister((volatile ULONG *)0xfd10400c,0xffffffff);
-        WriteRegister((volatile ULONG *)0xfd104004,0x000001db);
-        WriteRegister((volatile ULONG *)0xfd104000,0x00000c1b);
-        WriteRegister((volatile ULONG *)0xfd104000,0x80000c1b);
-        WriteRegister((volatile ULONG *)0xfd10400c,0x00000003);
-        WriteRegister((volatile ULONG *)0xfd104000,0x00000c1b);
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfd10400c,0x00000041);
-        
-        WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
-        WriteRegister((volatile ULONG *)0xfd10400c,0x00000041);
-        
-        // HDMI HAL_SetOutputSize VGA
-        
-        WriteRegister((volatile ULONG *)0xfd104000,0x00000c11);
-	    WriteRegister((volatile ULONG *)0xfd104100,0x0000007b);
-        WriteRegister((volatile ULONG *)0xfd104104,0x0000034a);
-        WriteRegister((volatile ULONG *)0xfd104108,0x00000025);
-        WriteRegister((volatile ULONG *)0xfd10410c,0x00000204);
+	WriteRegister((volatile ULONG *)0xfe000010,0x0000c0de);
+	WriteRegister((volatile ULONG *)0xfe0000b8,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe030810,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe20ac34,0x00003aa1);
+	WriteRegister((volatile ULONG *)0xfe20ad34,0x0000002a);
+	WriteRegister((volatile ULONG *)0xfe20a1fc,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe20a1ec,0x00000006);
+	WriteRegister((volatile ULONG *)0xfe20a1f0,0x00000005);
+	WriteRegister((volatile ULONG *)0xfe20a1f4,0x00000003);
+	WriteRegister((volatile ULONG *)0xfe20a1f8,0x00000003);
+	WriteRegister((volatile ULONG *)0xfe20a1fc,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe20a2fc,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe20a2ec,0x00000006);
+	WriteRegister((volatile ULONG *)0xfe20a2f0,0x00000005);
+	WriteRegister((volatile ULONG *)0xfe20a2f4,0x00000003);
+	WriteRegister((volatile ULONG *)0xfe20a2f8,0x00000003);
+	WriteRegister((volatile ULONG *)0xfe20a2fc,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe20a3fc,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe20a3ec,0x00000006);
+	WriteRegister((volatile ULONG *)0xfe20a3f0,0x00000005);
+	WriteRegister((volatile ULONG *)0xfe20a3f4,0x00000003);
+	WriteRegister((volatile ULONG *)0xfe20a3f8,0x00000003);
+	WriteRegister((volatile ULONG *)0xfe20a3fc,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe002000,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe002100,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe0020b0,0x000000a3);
+	WriteRegister((volatile ULONG *)0xfe00212c,0x478abc10);
+	WriteRegister((volatile ULONG *)0xfe002130,0x41fdbb70);
+	WriteRegister((volatile ULONG *)0xfe002230,0x20201004);
+	WriteRegister((volatile ULONG *)0xfe002238,0x000101c4);
+	WriteRegister((volatile ULONG *)0xfe002240,0x478abe08);
+	WriteRegister((volatile ULONG *)0xfe00224c,0x00000100);
+	WriteRegister((volatile ULONG *)0xfe002250,0x00000100);
+	WriteRegister((volatile ULONG *)0xfe002228,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe002208,0x00004000);
+	WriteRegister((volatile ULONG *)0xfe002208,0x00004000);
+	WriteRegister((volatile ULONG *)0xfe002220,0x4767e408);
+	WriteRegister((volatile ULONG *)0xfe002208,0x00004010);
+	WriteRegister((volatile ULONG *)0xfe002208,0x00004010);
+	WriteRegister((volatile ULONG *)0xfe002228,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe002208,0x00004000);
+	WriteRegister((volatile ULONG *)0xfe002220,0x4767e408);
+	WriteRegister((volatile ULONG *)0xfe002208,0x00004010);
+	WriteRegister((volatile ULONG *)0xfe00222c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe002234,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe00222c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe002238,0x000101c4);
+	WriteRegister((volatile ULONG *)0xfe00223c,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe002200,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe003000,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe003100,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe00312c,0x478ab810);
+	WriteRegister((volatile ULONG *)0xfe003130,0x41fdbd70);
+	WriteRegister((volatile ULONG *)0xfe20a0ec,0x00000006);
+	WriteRegister((volatile ULONG *)0xfe20a0f0,0x00000005);
+	WriteRegister((volatile ULONG *)0xfe20a0f4,0x00000003);
+	WriteRegister((volatile ULONG *)0xfe20a0f8,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe20a0fc,0x00000003);
+	WriteRegister((volatile ULONG *)0xfe030800,0x00000048);
+	WriteRegister((volatile ULONG *)0xfe030400,0x00000870);
+	WriteRegister((volatile ULONG *)0xfe030408,0x00000260);
+	WriteRegister((volatile ULONG *)0xfd104e08,0x00000039);
+	WriteRegister((volatile ULONG *)0xfd104e00,0x00000a50);
+	WriteRegister((volatile ULONG *)0xfd104e40,0x00000002);
+	WriteRegister((volatile ULONG *)0xfd104e00,0x00000a50);
+	WriteRegister((volatile ULONG *)0xfd104000,0x00000000);
+	WriteRegister((volatile ULONG *)0xfd10400c,0xffffffff);
+	WriteRegister((volatile ULONG *)0xfd104110,0x00000000);
+	WriteRegister((volatile ULONG *)0xfd104114,0x00000000);
+	WriteRegister((volatile ULONG *)0xfd104118,0x00000060);
+	WriteRegister((volatile ULONG *)0xfe001108,0x0c000000);
+	WriteRegister((volatile ULONG *)0xfe210000,0x00007ff6);
+	WriteRegister((volatile ULONG *)0xfe21001c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe210018,0x00000004);
+	WriteRegister((volatile ULONG *)0xfe210010,0x000000f3);
+	WriteRegister((volatile ULONG *)0xfe210014,0x00003c00);
+	WriteRegister((volatile ULONG *)0xfe21001c,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe210000,0x00007ffe);
+	WriteRegister((volatile ULONG *)0xfe21002c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe210028,0x00000004);
+	WriteRegister((volatile ULONG *)0xfe210020,0x000000f3);
+	WriteRegister((volatile ULONG *)0xfe210024,0x00003c00);
+	WriteRegister((volatile ULONG *)0xfe21002c,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe210000,0x00007ffe);
+	WriteRegister((volatile ULONG *)0xfe21003c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe210038,0x00000004);
+	WriteRegister((volatile ULONG *)0xfe210030,0x000000f3);
+	WriteRegister((volatile ULONG *)0xfe210034,0x00003c00);
+	WriteRegister((volatile ULONG *)0xfe21003c,0x00000001);
+	WriteRegister((volatile ULONG *)0xfd104200,0x00001002);
+	WriteRegister((volatile ULONG *)0xfd104004,0x00000011);
+	WriteRegister((volatile ULONG *)0xfe030900,0x00000649);
+	WriteRegister((volatile ULONG *)0xfd104004,0x00000011);
+	WriteRegister((volatile ULONG *)0xfd104000,0x00000000);
+	WriteRegister((volatile ULONG *)0xfd104200,0x003d1002);
+	WriteRegister((volatile ULONG *)0xfd104244,0x0000000f);
+	WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
+	WriteRegister((volatile ULONG *)0xfe001108,0x0c000000);
+	WriteRegister((volatile ULONG *)0xfd104200,0x003d1002);
+	WriteRegister((volatile ULONG *)0xfd104244,0x0000000f);
+	WriteRegister((volatile ULONG *)0xfd104400,0x00001800);
+	WriteRegister((volatile ULONG *)0xfe030900,0x00000448);
+	WriteRegister((volatile ULONG *)0xfd104020,0x00004807);
+	WriteRegister((volatile ULONG *)0xfd104200,0x003d1002);
+	WriteRegister((volatile ULONG *)0xfd104244,0x0000000f);
+	WriteRegister((volatile ULONG *)0xfd104020,0x00004807);
+	WriteRegister((volatile ULONG *)0xfd104200,0x003d1002);
+	WriteRegister((volatile ULONG *)0xfd104020,0x00004807);
+	WriteRegister((volatile ULONG *)0xfe030980,0x00000448);
+	WriteRegister((volatile ULONG *)0xfe20ba00,0x80000000);
+	WriteRegister((volatile ULONG *)0xfe20ba00,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe20bb04,0x00000005);
+	WriteRegister((volatile ULONG *)0xfe20bb08,0x00000003);
+	WriteRegister((volatile ULONG *)0xfe20bb0c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe20bb10,0x00000002);
+	WriteRegister((volatile ULONG *)0xfe20bb24,0x00000005);
+	WriteRegister((volatile ULONG *)0xfe20bb28,0x00000003);
+	WriteRegister((volatile ULONG *)0xfe20bb2c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe20bb30,0x00000002);
+	WriteRegister((volatile ULONG *)0xfe20bb44,0x00000005);
+	WriteRegister((volatile ULONG *)0xfe20bb48,0x00000003);
+	WriteRegister((volatile ULONG *)0xfe20bb4c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe20bb50,0x00000002);
+	WriteRegister((volatile ULONG *)0xfe20bb84,0x00000005);
+	WriteRegister((volatile ULONG *)0xfe20bb88,0x00000003);
+	WriteRegister((volatile ULONG *)0xfe20bb8c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe20bb90,0x00000002);
+	WriteRegister((volatile ULONG *)0xfe20ba60,0x80c00003);
+	WriteRegister((volatile ULONG *)0xfe20ba64,0x41085000);
+	WriteRegister((volatile ULONG *)0xfe20ba70,0x80c00002);
+	WriteRegister((volatile ULONG *)0xfe20ba74,0x410b5000);
+	WriteRegister((volatile ULONG *)0xfe20ba80,0x80c00001);
+	WriteRegister((volatile ULONG *)0xfe20ba84,0x410e5000);
+	WriteRegister((volatile ULONG *)0xfe030980,0x00000148);
+	WriteRegister((volatile ULONG *)0xfe030900,0x00000148);
+	WriteRegister((volatile ULONG *)0xfe030900,0x00000148);
+	WriteRegister((volatile ULONG *)0xfe030980,0x00000148);
+	WriteRegister((volatile ULONG *)0xfe20ac04,0x00101060);
+	WriteRegister((volatile ULONG *)0xfe20ac00,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe20ac28,0x0007007a);
+	WriteRegister((volatile ULONG *)0xfe20ac2c,0x02040349);
+	WriteRegister((volatile ULONG *)0xfe20ac04,0x00101060);
+	WriteRegister((volatile ULONG *)0xfe20ac0c,0x0025007a);
+	WriteRegister((volatile ULONG *)0xfe20ac10,0x02040349);
+	WriteRegister((volatile ULONG *)0xfe20ac00,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe20ac38,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe000010,0x0000c0de);
+	WriteRegister((volatile ULONG *)0xfe0000a4,0x00003411);
+	WriteRegister((volatile ULONG *)0xfe030404,0x0000008a);
+	WriteRegister((volatile ULONG *)0xfe030800,0x00000048);
+	WriteRegister((volatile ULONG *)0xfe030b00,0x00000903);
+	WriteRegister((volatile ULONG *)0xfe030b04,0x00000f1a);
+	WriteRegister((volatile ULONG *)0xfe030b08,0x0000013a);
+	WriteRegister((volatile ULONG *)0xfe030b0c,0x00001805);
+	WriteRegister((volatile ULONG *)0xfe030b10,0x00000903);
+	WriteRegister((volatile ULONG *)0xfe030b14,0x00000c3c);
+	WriteRegister((volatile ULONG *)0xfe030b18,0x0000003a);
+	WriteRegister((volatile ULONG *)0xfe030b1c,0x00001a06);
+	WriteRegister((volatile ULONG *)0xfe030b20,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b24,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b28,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b2c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b30,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b34,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b38,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b3c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b40,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b44,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b48,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b4c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b50,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b54,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b58,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b5c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b60,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b64,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b68,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b6c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b70,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b74,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b78,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b7c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b80,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b84,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b88,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b8c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b90,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b94,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b98,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030b9c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030ba0,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030ba4,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030ba8,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bac,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bb0,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bb4,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bb8,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bbc,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bc0,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bc4,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bc8,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bcc,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bd0,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bd4,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bd8,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bdc,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030be0,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030be4,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030be8,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bec,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bf0,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bf4,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bf8,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030bfc,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030800,0x68000048);
+	WriteRegister((volatile ULONG *)0xfe000020,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe000024,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe000018,0xfffffff1);
+	WriteRegister((volatile ULONG *)0xfe00001c,0x00001c72);
+	WriteRegister((volatile ULONG *)0xfe000020,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe030324,0x00000200);
+	WriteRegister((volatile ULONG *)0xfe030328,0x0000035a);
+	WriteRegister((volatile ULONG *)0xfe030340,0x0000041a);
+	WriteRegister((volatile ULONG *)0xfe03032c,0x00360352);
+	WriteRegister((volatile ULONG *)0xfe030330,0x0006020d);
+	WriteRegister((volatile ULONG *)0xfe030334,0x0006020d);
+	WriteRegister((volatile ULONG *)0xfe030338,0x03520352);
+	WriteRegister((volatile ULONG *)0xfe03033c,0x03520352);
+	WriteRegister((volatile ULONG *)0xfe03035c,0x003e0000);
+	WriteRegister((volatile ULONG *)0xfe030360,0x00070001);
+	WriteRegister((volatile ULONG *)0xfe030364,0x00070001);
+	WriteRegister((volatile ULONG *)0xfe030368,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe03036c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe03037c,0x00060044);
+	WriteRegister((volatile ULONG *)0xfe030380,0x00010007);
+	WriteRegister((volatile ULONG *)0xfe030384,0x00010007);
+	WriteRegister((volatile ULONG *)0xfe030388,0x00060006);
+	WriteRegister((volatile ULONG *)0xfe03038c,0x00060006);
+	WriteRegister((volatile ULONG *)0xfe030324,0x00000200);
+	WriteRegister((volatile ULONG *)0xfe030398,0x00000018);
+	WriteRegister((volatile ULONG *)0xfe030324,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe030348,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe0000a4,0x00003411);
+	WriteRegister((volatile ULONG *)0xfd104e08,0x00000939);
+	WriteRegister((volatile ULONG *)0xfe030408,0x00000260);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfd104e04,0x0000003b);
+	WriteRegister((volatile ULONG *)0xfe030814,0x01ed0005);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe030840,0x01ed0005);
+	WriteRegister((volatile ULONG *)0xfe030818,0x00fc827f);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03081c,0x008fe20b);
+	WriteRegister((volatile ULONG *)0xfe030820,0x00f684fc);
+	WriteRegister((volatile ULONG *)0xfe030824,0x050f7c24);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe030828,0x00f4857c);
+	WriteRegister((volatile ULONG *)0xfe03082c,0x0a1f402e);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe030830,0x00fa027f);
+	WriteRegister((volatile ULONG *)0xfe030834,0x0e076e1d);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe030844,0x00fc827f);
+	WriteRegister((volatile ULONG *)0xfe030848,0x008fe20b);
+	WriteRegister((volatile ULONG *)0xfe03084c,0x00f684fc);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe030850,0x050f7c24);
+	WriteRegister((volatile ULONG *)0xfe030854,0x00f4857c);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe030858,0x0a1f402e);
+	WriteRegister((volatile ULONG *)0xfe03085c,0x00fa027f);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe030860,0x0e076e1d);
+	WriteRegister((volatile ULONG *)0xfe030800,0x68000048);
+	WriteRegister((volatile ULONG *)0xfe030808,0x00d20278);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03080c,0x00d20278);
+	WriteRegister((volatile ULONG *)0xfe030838,0x00d20278);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe030800,0x68000349);
+	WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe030400,0x00000070);
+	WriteRegister((volatile ULONG *)0xfe030900,0x00000349);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe20a124,GDP1_NODE_TOP_PHY_ADDRESS);
+	WriteRegister((volatile ULONG *)0xfe20ac00,0x00000009);
+	WriteRegister((volatile ULONG *)0xfe20ac38,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe20ad04,0x00101060);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfd104004,0x00000011);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfd104000,0x00000000);
+	WriteRegister((volatile ULONG *)0xfd104200,0x003d1002);
+	WriteRegister((volatile ULONG *)0xfe000010,0x0000c0de);
+	WriteRegister((volatile ULONG *)0xfe0000a4,0x00001611);
+	WriteRegister((volatile ULONG *)0xfe000068,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfd104244,0x0000000f);
+	WriteRegister((volatile ULONG *)0xfe00006c,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe000060,0xfffffff1);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe000064,0x00001c72);
+	WriteRegister((volatile ULONG *)0xfe000068,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
+	WriteRegister((volatile ULONG *)0xfe001108,0x0c000000);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe0000a8,0x00000006);
+	WriteRegister((volatile ULONG *)0xfd104e04,0x00000011);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe030800,0x68000349);
+	WriteByteRegister((volatile UCHAR *)0xfe0301a8,0x1d);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe030044,0x75);
+	WriteByteRegister((volatile UCHAR *)0xfe030048,0xd8);
+	WriteRegister((volatile ULONG *)0xfd104004,0x00000011);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe030048,0xd7);
+	WriteByteRegister((volatile UCHAR *)0xfe03004c,0x9e);
+	WriteByteRegister((volatile UCHAR *)0xfe0301ac,0x1e);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe03017c,0x17);
+	WriteRegister((volatile ULONG *)0xfd104000,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe20ad00,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe20ad28,0x00050077);
+	WriteRegister((volatile ULONG *)0xfe20ad2c,0x02050346);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfd104200,0x003d1002);
+	WriteRegister((volatile ULONG *)0xfe20ad04,0x00101060);
+	WriteRegister((volatile ULONG *)0xfe20ad0c,0x00260077);
+	WriteRegister((volatile ULONG *)0xfe20ad10,0x02050346);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfd104244,0x0000000f);
+	WriteRegister((volatile ULONG *)0xfe20ad00,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe20ad38,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe000068,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe00006c,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe000060,0xfffffff1);
+	WriteRegister((volatile ULONG *)0xfe000064,0x00001c72);
+	WriteRegister((volatile ULONG *)0xfe000068,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
+	WriteRegister((volatile ULONG *)0xfe001108,0x0c000000);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe001104,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe001108,0x08060000);
+	WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
+	WriteRegister((volatile ULONG *)0xfe030224,0x00000200);
+	WriteRegister((volatile ULONG *)0xfe030228,0x0000035a);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe030240,0x0000020d);
+	WriteRegister((volatile ULONG *)0xfe03022c,0x003a0356);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe030230,0x0107ffff);
+	WriteRegister((volatile ULONG *)0xfe030234,0xffff0106);
+	WriteRegister((volatile ULONG *)0xfe030238,0x01a9ffff);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03023c,0xffff0356);
+	WriteRegister((volatile ULONG *)0xfe03025c,0x0000003e);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe00110c,0x32645000);
+	WriteRegister((volatile ULONG *)0xfe00110c,0x32645800);
+	WriteRegister((volatile ULONG *)0xfe030260,0x00010004);
+	WriteRegister((volatile ULONG *)0xfe030264,0x00000003);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe030268,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe03026c,0x01ad01ad);
+	WriteRegister((volatile ULONG *)0xfe03027c,0x003e0000);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfd104014,0x00000002);
+	WriteRegister((volatile ULONG *)0xfd104018,0x00000032);
+	WriteRegister((volatile ULONG *)0xfe030280,0x00040001);
+	WriteRegister((volatile ULONG *)0xfe030284,0x00030000);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfd104100,0x0000007b);
+	WriteRegister((volatile ULONG *)0xfd104104,0x0000034a);
+	WriteRegister((volatile ULONG *)0xfd104108,0x00000025);
+	WriteRegister((volatile ULONG *)0xfe030288,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe03028c,0x01ad01ad);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe030224,0x00000200);
+	WriteRegister((volatile ULONG *)0xfe030298,0x00000018);
+	WriteRegister((volatile ULONG *)0xfe030224,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe030248,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe03001c,0x00);
+	WriteByteRegister((volatile UCHAR *)0xfe030000,0x96);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe030004,0x46);
+	WriteRegister((volatile ULONG *)0xfd10410c,0x00000204);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe030008,0x60);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfd10400c,0xffffffff);
+	WriteRegister((volatile ULONG *)0xfd104004,0x000001df);
+	WriteRegister((volatile ULONG *)0xfd104000,0x00000c1b);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe03000c,0x08);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfd10400c,0x00000041);
+	WriteRegister((volatile ULONG *)0xfd104000,0x80000c1b);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe030010,0x08);
+	WriteByteRegister((volatile UCHAR *)0xfe030014,0x00);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe030020,0x24);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe030018,0x91);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe030170,0x48);
+	WriteByteRegister((volatile UCHAR *)0xfe030174,0x38);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe030178,0x08);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfd10400c,0x00000041);
+	WriteRegister((volatile ULONG *)0xfd10400c,0x00000003);
+	WriteRegister((volatile ULONG *)0xfd104000,0x00000c1b);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe030020,0x24);
+	WriteByteRegister((volatile UCHAR *)0xfe030100,0x10);
+	WriteRegister((volatile ULONG *)0xfd10400c,0x00000041);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe030104,0x09);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe030088,0x40);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe03008c,0x00);
+	WriteByteRegister((volatile UCHAR *)0xfe030090,0x00);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe030094,0x00);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe030098,0x00);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe03009c,0x00);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a0,0x00);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe030144,0x32);
+	WriteByteRegister((volatile UCHAR *)0xfe030120,0x20);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe030114,0x80);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe03011c,0x80);
+	WriteByteRegister((volatile UCHAR *)0xfe030118,0x00);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0301a4,0x80);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe030034,0x35);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe0301a8,0x1d);
+	WriteByteRegister((volatile UCHAR *)0xfe030044,0x75);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe030048,0xd8);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe030048,0xd7);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe03004c,0x9e);
+	WriteByteRegister((volatile UCHAR *)0xfe0301ac,0x1e);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe03017c,0x17);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe030018,0x10);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe0301a8,0x1d);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe03007c,0x00);
+	WriteByteRegister((volatile UCHAR *)0xfe030080,0x00);
+	WriteByteRegister((volatile UCHAR *)0xfe030084,0x18);
+	WriteByteRegister((volatile UCHAR *)0xfe03000c,0x28);
+	WriteRegister((volatile ULONG *)0xfd10400c,0x00000041);
+	WriteRegister((volatile ULONG *)0xfd104210,0x000d0282);
+	WriteRegister((volatile ULONG *)0xfd104214,0x40080024);
+	WriteRegister((volatile ULONG *)0xfd104218,0x00000003);
+	WriteRegister((volatile ULONG *)0xfd10421c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfd104220,0x00000000);
+	WriteRegister((volatile ULONG *)0xfd104224,0x00000000);
+	WriteRegister((volatile ULONG *)0xfd104228,0x00000000);
+	WriteRegister((volatile ULONG *)0xfd10422c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfd104230,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000018);
+	WriteRegister((volatile ULONG *)0xfd10400c,0x00000045);
+	WriteRegister((volatile ULONG *)0xfd104210,0x000d0282);
+	WriteRegister((volatile ULONG *)0xfd104214,0x40080024);
+	WriteRegister((volatile ULONG *)0xfd104218,0x00000003);
+	WriteRegister((volatile ULONG *)0xfd10421c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfd104220,0x00000000);
+	WriteRegister((volatile ULONG *)0xfd104224,0x00000000);
+	WriteRegister((volatile ULONG *)0xfd104228,0x00000000);
+	WriteRegister((volatile ULONG *)0xfd10422c,0x00000000);
+	WriteRegister((volatile ULONG *)0xfd104230,0x00000001);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x01);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x08);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x40);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x8f);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe030044,0x75);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x01);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x08);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe030048,0xd7);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x40);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe030048,0xd7);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x8f);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x01);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x08);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe03004c,0x9e);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x40);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe0301ac,0x1e);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x8f);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x01);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x08);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteByteRegister((volatile UCHAR *)0xfe03017c,0x17);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x40);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x8f);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfd104e00,0x00000850);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x01);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x08);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x40);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x8f);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe20a324,GDP3_NODE_TOP_PHY_ADDRESS);
+	WriteRegister((volatile ULONG *)0xfe0000a8,0x00000007);
+	WriteRegister((volatile ULONG *)0xfe20ad00,0x00000021);
+	WriteRegister((volatile ULONG *)0xfe20ad38,0x00000000);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000018);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x01);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x08);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x40);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000018);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000018);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x8f);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x01);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x08);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x00);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x40);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03029c,0x00000010);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a4,0x8f);
+	WriteByteRegister((volatile UCHAR *)0xfe0300a8,0x00);
 
- 		return 0;
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000008);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+
+	WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
+	WriteRegister((volatile ULONG *)0xfe001108,0x0c000000);
+	WriteRegister((volatile ULONG *)0xfe001108,0x08060000);
+	WriteRegister((volatile ULONG *)0xfe00110c,0x32644000);
+	WriteRegister((volatile ULONG *)0xfe00110c,0x32645000);
+	WriteRegister((volatile ULONG *)0xfe00110c,0x32645800);
+
+	WriteRegister((volatile ULONG *)0xfd104014,0x00000002);
+	WriteRegister((volatile ULONG *)0xfd104018,0x00000032);
+	WriteRegister((volatile ULONG *)0xfd104100,0x0000007b);
+	WriteRegister((volatile ULONG *)0xfd104104,0x0000034a);
+	WriteRegister((volatile ULONG *)0xfd104108,0x00000025);
+	WriteRegister((volatile ULONG *)0xfd10410c,0x00000204);
+	WriteRegister((volatile ULONG *)0xfd10400c,0xffffffff);
+	WriteRegister((volatile ULONG *)0xfd104004,0x000001db);
+	WriteRegister((volatile ULONG *)0xfd104000,0x00000c1b);
+	WriteRegister((volatile ULONG *)0xfd104000,0x80000c1b);
+	WriteRegister((volatile ULONG *)0xfd10400c,0x00000003);
+	WriteRegister((volatile ULONG *)0xfd104000,0x00000c1b);
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfd10400c,0x00000041);
+
+	WriteRegister((volatile ULONG *)0xfe03039c,0x00000010);
+	WriteRegister((volatile ULONG *)0xfd10400c,0x00000041);
+
+	// HDMI HAL_SetOutputSize VGA
+
+	WriteRegister((volatile ULONG *)0xfd104000,0x00000c11);
+	WriteRegister((volatile ULONG *)0xfd104100,0x0000007b);
+	WriteRegister((volatile ULONG *)0xfd104104,0x0000034a);
+	WriteRegister((volatile ULONG *)0xfd104108,0x00000025);
+	WriteRegister((volatile ULONG *)0xfd10410c,0x00000204);
+
+	return 0;
 }
 
 static unsigned short smitGetCrc16(unsigned char *data_blk_ptr,unsigned int data_blk_size)
-{       
-	unsigned short		crc_return;   
-	unsigned char		CRC16Lo=INI_VECTORLo;
-	unsigned char		CRC16Hi=INI_VECTORHi;
-	unsigned char		SaveHi,SaveLo;
+{
+	unsigned short		crc_return;
+	unsigned char		CRC16Lo = INI_VECTORLo;
+	unsigned char		CRC16Hi = INI_VECTORHi;
+	unsigned char		SaveHi, SaveLo;
 	register unsigned int	i, j;
 	for (i = 0; i < data_blk_size; i++)
 	{
 		CRC16Lo = CRC16Lo ^ *data_blk_ptr++;
-		for ( j = 0;  j < 8;  j++ )
+		for ( j = 0; j < 8; j++ )
 		{
 			SaveHi = CRC16Hi;
 			SaveLo = CRC16Lo;
 			CRC16Hi = CRC16Hi >> 1;
 			CRC16Lo = CRC16Lo >> 1;
 			if ((SaveHi & 0x1) == 0x1)
-			{ 
+			{
 				CRC16Lo = CRC16Lo | 0x80;
 			}
-			if ((SaveLo & 0x1) == 0x1) 
-			{ 
+			if ((SaveLo & 0x1) == 0x1)
+			{
 				CRC16Hi = CRC16Hi ^ POLYNOMIALHi;
 				CRC16Lo = CRC16Lo ^ POLYNOMIALLo;
 			}
 		}
 	}
-	crc_return=CRC16Hi * 0xff + CRC16Lo;
-	return crc_return; 
+	crc_return = CRC16Hi * 0xff + CRC16Lo;
+	return crc_return;
 }
 
 /*
@@ -8271,11 +8271,11 @@ int usb_ext2load(char *file_name,int partition)
 
 	strncpy(ext2load_command[0], "ext2load", COMMAND_SIZE);
 	strncpy(ext2load_command[1], "usb", COMMAND_SIZE);
-	if(partition==INT_USB_PARTITION_BACKUP)
+	if(partition == INT_USB_PARTITION_BACKUP)
 	{
 		strncpy(ext2load_command[2], "0:1", COMMAND_SIZE);
 	}
-	else if(partition==INT_USB_PARTITION_RUNNING)
+	else if(partition == INT_USB_PARTITION_RUNNING)
 	{
 		strncpy(ext2load_command[2], "0:2", COMMAND_SIZE);
 	}
@@ -8284,7 +8284,7 @@ int usb_ext2load(char *file_name,int partition)
 
 	ret = do_ext2load(NULL, 0, 6, ext2load_command);
 
-	if (0 != ret) 
+	if (0 != ret)
 	{
 		goto fail_return;
 	}
@@ -8369,7 +8369,7 @@ static int CompareSHA1Value(unsigned char *buffer1, unsigned char *buffer2)
 {
 	int i;
 
-	for(i=0;i<20;i++)
+	for(i = 0; i < 20; i++)
 	{
 		if(buffer1[i] != buffer2[i])
 		{
@@ -8377,7 +8377,7 @@ static int CompareSHA1Value(unsigned char *buffer1, unsigned char *buffer2)
 		}
 	}
 
-	if(i==20)
+	if(i == 20)
 	{
 		return 0;
 	}
@@ -8392,19 +8392,19 @@ static void SHA1ValueAdd(unsigned char *Sum, unsigned char *AddValue)
 {
 	int i;
 
-	for(i=0;i<20;i++)
+	for(i = 0; i < 20; i++)
 	{
-		Sum[i]=(Sum[i]+AddValue[i])%256;
+		Sum[i] = (Sum[i] + AddValue[i]) % 256;
 	}
 
 }
 
 /**********************************************************************
 Function   :check_update_sw_header
-Descriptor : 
+Descriptor :
 SUCCESS_RET ----need update
 FAILURE_RET ---Don't need update
-Notice	   :
+Notice     :
 **********************************************************************/
 static int check_update_sw_header(ImageFileHeader_T *pFileHeader, SPISoftWareInfo_T *pSPISWInfo)
 {
@@ -8413,11 +8413,11 @@ static int check_update_sw_header(ImageFileHeader_T *pFileHeader, SPISoftWareInf
 	ret =FAILURE_RET;
 
 	if( ((pFileHeader->FactoryID == pSPISWInfo->FactoryID) || (0xffffffff == pSPISWInfo->FactoryID))
-		&&((pFileHeader->DeviceID == pSPISWInfo->DeviceID) || (0xffffffff == pSPISWInfo->DeviceID)) 
+		&&((pFileHeader->DeviceID == pSPISWInfo->DeviceID) || (0xffffffff == pSPISWInfo->DeviceID))
 		&&(pFileHeader->UpdateUbootFlag == 0xabcd6789)
 		&&(pFileHeader->UBOOT_Ver != pSPISWInfo->UBOOT_Ver) )
 	{
-		ret =  SUCCESS_RET;	
+		ret = SUCCESS_RET;
 	}
 	return  ret;
 }
@@ -8426,12 +8426,12 @@ static int check_update_sw_header(ImageFileHeader_T *pFileHeader, SPISoftWareInf
 
 static void smit_restartST40(void)
 {
-	volatile unsigned short *ST40_CPG1_WTCNT   = 0xFFC00000 + 0x08;
-	volatile unsigned short *ST40_CPG1_WTCSR   = 0xFFC00000 + 0x0C;
+	volatile unsigned short *ST40_CPG1_WTCNT  = 0xFFC00000 + 0x08;
+	volatile unsigned short *ST40_CPG1_WTCSR  = 0xFFC00000 + 0x0C;
 	volatile unsigned short *ST40_CPG1_WTCSR2 = 0xFFC00000 + 0x1C;
 
-	*ST40_CPG1_WTCNT = 0x5AF0;
-	*ST40_CPG1_WTCSR = 0xA547;
+	*ST40_CPG1_WTCNT  = 0x5AF0;
+	*ST40_CPG1_WTCSR  = 0xA547;
 	*ST40_CPG1_WTCSR2 = 0xAA00;
 	*ST40_CPG1_WTCSR  = 0xA5C7;
 
@@ -8441,32 +8441,32 @@ static void smit_restartST40(void)
 
 /* init PIO of led and key config */
 static void init_pio(void)
-{    
+{
 	/*init led&key*/
-	PIO0_CLEAR_C0 = 0x32;    
-	PIO0_CLEAR_C1 = 0x32;    
-	PIO0_CLEAR_C2 = 0x32;    
-	PIO0_SET_C0 = 0x02;    
-	PIO0_SET_C1 = 0x30;    
-	PIO0_SET_C2 = 0x02;  
+	PIO0_CLEAR_C0 = 0x32;
+	PIO0_CLEAR_C1 = 0x32;
+	PIO0_CLEAR_C2 = 0x32;
+	PIO0_SET_C0 = 0x02;
+	PIO0_SET_C1 = 0x30;
+	PIO0_SET_C2 = 0x02;
 
 	udelay(1000);
 }
 
 static void set_led_green(int v)
-{     
+{
 	STPIO_SET_PIN(PIO0_BASSADDRESS,4,v);
 }
 
 static void set_led_red(int v)
-{     
+{
 	STPIO_SET_PIN(PIO0_BASSADDRESS,5,v);
 }
 
 static void init_led(void)
-{     
+{
 	set_led_green(0x01);   //close
-	set_led_red(0x00);     //open     
+	set_led_red(0x00);     //open
 }
 
 /**********************************************************************
@@ -8474,32 +8474,32 @@ Function   :check_key_press
 Descriptor :check if key is down 3 second
 Input      :
 Output     :
-return     : KEY_DOWN:   success   
+return     : KEY_DOWN:   success
 KEY_UP:     failed   ( < 3 second )
-Notice	   :
+Notice     :
 **********************************************************************/
 static int check_key_press(void)
-{    
+{
 	int count,cur_key,next_key,led;
 
-	led=0x00;
-	count=7;
-	cur_key=STPIO_GET_PIN(PIO0_BASSADDRESS, 1);
+	led = 0x00;
+	count = 7;
+	cur_key = STPIO_GET_PIN(PIO0_BASSADDRESS, 1);
 
 	if(cur_key == KEY_DOWN)
 	{
-		while(count--)  
+		while(count--)
 		{
-			udelay(500000);   
-			next_key=STPIO_GET_PIN(PIO0_BASSADDRESS, 1);
+			udelay(500000);
+			next_key = STPIO_GET_PIN(PIO0_BASSADDRESS, 1);
 			if(next_key != cur_key)
 			{
 				return KEY_UP;
 			}
-			cur_key=next_key;
+			cur_key = next_key;
 
 			set_led_green(led);
-			led = !led;  
+			led = !led;
 		}
 		if(!count)
 		{
@@ -8515,21 +8515,21 @@ Function   :set_led_flash
 Descriptor :the board have two led,red and green;
 Input      :
 Output     :
-return     : 
-Notice	   :
+return     :
+Notice     :
 **********************************************************************/
 static void set_led_flash(led_gb620_et led,unsigned int nsec,led_flash_et ntype)
-{    
+{
 	int nswitch,ncnt,ntime;
 
 	nswitch = 1;
 	ntime = nsec;
 
-	do 
+	do
 	{
-		for(ncnt=0;ncnt<5;ncnt++)
+		for(ncnt = 0; ncnt < 5; ncnt++)
 		{
-			udelay(200000);  
+			udelay(200000);
 			if(led == GB620_RED_LED)
 			{
 				set_led_red(nswitch);
@@ -8538,7 +8538,7 @@ static void set_led_flash(led_gb620_et led,unsigned int nsec,led_flash_et ntype)
 			{
 				set_led_green(nswitch);
 			}
-			nswitch = !nswitch; 
+			nswitch = !nswitch;
 		}
 		ntime --;
 	}while( (GB620_LED_FLASH_ALL == ntype) || (ntime > 0) );
@@ -8547,18 +8547,18 @@ static void set_led_flash(led_gb620_et led,unsigned int nsec,led_flash_et ntype)
 
 /**********************************************************************
 Function   :usb_config_start
-Descriptor :*USB config and start*; 
+Descriptor :*USB config and start*;
 Input      :
 Output     :
-return     : SUCCESS_RET:   success   
+return     : SUCCESS_RET:   success
 FAILURE_RET:   failed
-Notice	   :
+Notice     :
 **********************************************************************/
 static int usb_config_start(unsigned int cfg)
 {
 	int ncnt = 0;
 	int nret = FAILURE_RET;
-	cfg_7105_usb_ohci_regs = cfg; 
+	cfg_7105_usb_ohci_regs = cfg;
 
 	nret = usb_operate(USB_START);
 
@@ -8573,13 +8573,13 @@ static int usb_config_start(unsigned int cfg)
 }
 
 /*----------------------------------------------------------------------------
- * FuncName   :  smit_logo_init 
+ * FuncName   :  smit_logo_init
  * Description:  display logo, default 480p@NTSC 3.58, default bmp size 190*220
  				 support HD/SD photo
- * Parameters :  @ 
-                 @ 
+ * Parameters :  @
+                 @
  * FuncReturn :  NULL
- * Information:  
+ * Information:
               1、10-12,2010    jgong    Write/Modify
 ------------------------------------------------------------------------------*/
 static int smit_logo_init(void)
@@ -8588,34 +8588,34 @@ static int smit_logo_init(void)
 	unsigned int  i, j, x, y, h, w, w_screen, h_screen;
 	unsigned int logo_size, display_sd, color;
 
-	color = 0x80000000; 	/* backgrand color: black*/
+	color = 0x80000000;   /* backgrand color: black*/
 
 	L1_p = (unsigned int *)HD_PIC_LAOD_ADDRESS;   /* HD PHOTO */
-	L2_p = (unsigned int *)SD_PIC_LAOD_ADDRESS;	  /* SD PHOTO */
-	
+	L2_p = (unsigned int *)SD_PIC_LAOD_ADDRESS;   /* SD PHOTO */
+
 	smit_480cfg_logo_init();
-	
+
 	w_screen = 720;
 	h_screen = 480;
 	w = 190;
 	h = 220;
 	x = (w_screen - w)/2;
 	y = (h_screen - h)/2;
-	for (i = 0; i < w_screen; i++) 
+	for (i = 0; i < w_screen; i++)
 	{
-		for (j = 0; j < h_screen; j++) 
-		{	
+		for (j = 0; j < h_screen; j++)
+		{
 			/* background */
-			*(L1_p + i + j*w_screen) = color;  
-			*(L2_p + i + j*w_screen) = color;  
+			*(L1_p + i + j*w_screen) = color;
+			*(L2_p + i + j*w_screen) = color;
 		}
 	}
-	for(i=y;i<y+h;i++)
+	for(i = y; i < y+h; i++)
 	{
-		for(j=x;j<x+w;j++)  
+		for(j = x; j < x+w; j++)
 		{
-			*(L1_p + w_screen*i + j)  = image_data[(i-y)*w+j-x];
-			*(L2_p + w_screen*i + j)  = image_data[(i-y)*w+j-x];
+			*(L1_p + w_screen*i + j) = image_data[(i-y)*w+j-x];
+			*(L2_p + w_screen*i + j) = image_data[(i-y)*w+j-x];
 		}
 	}
 	return 0;
@@ -8623,37 +8623,37 @@ static int smit_logo_init(void)
 
 /**********************************************************************
 Function   :setenv_start
-Descriptor :set env to start kernel and FS; 
-start kernel about take 20s,start FS about 8s 
+Descriptor :set env to start kernel and FS;
+start kernel about take 20s,start FS about 8s
 Input      :
 partition :usb partition (inside usb has 3 partition,extern usb only has 1 partition)
 flag: spi update flag
 Output     :
-return     : SUCCESS_RET:   success   
+return     : SUCCESS_RET:   success
 FAILURE_RET:   failed
-Notice	   :
+Notice     :
 **********************************************************************/
 int setenv_start(int partition,unsigned char flag)
 {
 	/* factory mode */
 	if (flag == EXT_EXT2_USB)
 	{
-		setenv("bootargs", "console=ttyAS0,115200 root=/dev/sdb1  rootfstype=ext3 rw  nwhwconf=device:eth0,hwaddr:10:08:E2:12:06:BD phyaddr:0,watchdog:5000 mem=120M bigphysarea=2048"); 
-		setenv("bootcmd", "ext2load usb 0:1 80000000 vmlinux.ub; bootm 80000000"); 
+		setenv("bootargs", "console=ttyAS0,115200 root=/dev/sdb1  rootfstype=ext3 rw  nwhwconf=device:eth0,hwaddr:10:08:E2:12:06:BD phyaddr:0,watchdog:5000 mem=120M bigphysarea=2048");
+		setenv("bootcmd", "ext2load usb 0:1 80000000 vmlinux.ub; bootm 80000000");
 
 	}
 	/* inside usb start ;setenv by partition: 1 or 2*/
-	else 
+	else
 	{
 		if(partition == INT_USB_PARTITION_BACKUP)
 		{
-			setenv("bootargs", "console=ttyAS0,115200 root=8:1  rootfstype=ext3 rw rootflags=data=journal nwhwconf=device:eth0,hwaddr:10:08:E2:12:06:BD phyaddr:0,watchdog:5000 mem=120M bigphysarea=2048");    	
-			setenv("bootcmd", "ext2load usb 0:1 80000000 vmlinux.ub; bootm 80000000"); 
+			setenv("bootargs", "console=ttyAS0,115200 root=8:1  rootfstype=ext3 rw rootflags=data=journal nwhwconf=device:eth0,hwaddr:10:08:E2:12:06:BD phyaddr:0,watchdog:5000 mem=120M bigphysarea=2048");
+			setenv("bootcmd", "ext2load usb 0:1 80000000 vmlinux.ub; bootm 80000000");
 		}
 		else if(partition == INT_USB_PARTITION_RUNNING)
 		{
 			setenv("bootargs", "console=ttyAS0,115200 root=8:2  rootfstype=ext3 rw rootflags=data=journal nwhwconf=device:eth0,hwaddr:10:08:E2:12:06:BD phyaddr:0,watchdog:5000 mem=120M bigphysarea=2048");
-			setenv("bootcmd", "ext2load usb 0:2 80000000 vmlinux.ub; bootm 80000000");    	    	
+			setenv("bootcmd", "ext2load usb 0:2 80000000 vmlinux.ub; bootm 80000000");
 		}
 	}
 	return SUCCESS_RET;
@@ -8663,20 +8663,20 @@ Function   :uboot_update
 Descriptor :
 Input      :none
 Output     :none
-return     : SUCCESS_RET:   success   
+return     : SUCCESS_RET:   success
 FAILURE_RET:   failed
-Notice	   :
+Notice     :
 **********************************************************************/
 int uboot_update(unsigned char flag)
 {
-	ImageFileHeader_T *pImgFileHeader=NULL;
-	unsigned char     *pUbootHeader=NULL;
+	ImageFileHeader_T *pImgFileHeader = NULL;
+	unsigned char     *pUbootHeader = NULL;
 	unsigned short    CRCValue;
-	SPISoftWareInfo_T SPISoftWareInfo={0};
-	unsigned char     SHA1TempResult[20]={0};
+	SPISoftWareInfo_T SPISoftWareInfo = {0};
+	unsigned char     SHA1TempResult[20] = {0};
 
 	if(GetStorageDevicesNum() < 1)
-	{ 
+	{
 		return FAILURE_RET;
 	}
 	/* load uboot sw to ddr */
@@ -8697,14 +8697,14 @@ int uboot_update(unsigned char flag)
 		/* check sw update info */
 		if(0 == check_update_sw_header(pImgFileHeader, &SPISoftWareInfo))
 		{
-			/* count uboot sw data sha1 */					
+			/* count uboot sw data sha1 */
 			soft_sha_1(pUbootHeader, MAX_IMAGE_SECTION/2, SHA1TempResult);
 
 			/* check uboot data valid */
 			if(0 == CompareSHA1Value(pImgFileHeader->SHA1_Uboot, SHA1TempResult))
 			{
 				/* write uboot to spi flash */
-				if( SUCCESS_RET == do_auto_update_uboot_to_spi(NULL, pImgFileHeader->UbootSize, \
+				if(SUCCESS_RET == do_auto_update_uboot_to_spi(NULL, pImgFileHeader->UbootSize, \
 					sizeof(ImageFileHeader_T), NULL))
 				{
 					SPISoftWareInfo.UBOOT_Ver = pImgFileHeader->UBOOT_Ver;
@@ -8713,7 +8713,7 @@ int uboot_update(unsigned char flag)
 					strncpy(SPISoftWareInfo.Date, pImgFileHeader->Date,10);
 
 					WriteSPIFlashDataFromBuffer(SPI_UBOOT_UPDATE_INFO, (unsigned char *)(&SPISoftWareInfo), \
-						sizeof(SPISoftWareInfo_T));	
+						sizeof(SPISoftWareInfo_T));
 
 					if(flag != NORMAL_START)
 					{
@@ -8723,17 +8723,17 @@ int uboot_update(unsigned char flag)
 					smit_restartST40();
 				}
 				else
-				{	
+				{
 					set_led_flash(GB620_RED_LED,UBOOT_UPDATE_TIME_SEC,GB620_LED_FLASH_SEC);
 					return ABNORMITY_RET;
 				}
-			} 
+			}
 		}
 		else
 		{
 			set_led_flash(GB620_RED_LED,UBOOT_UPDATE_TIME_SEC,GB620_LED_FLASH_SEC);
 			return ABNORMITY_RET;
-		}   
+		}
 	}
 	return FAILURE_RET;
 
@@ -8744,69 +8744,69 @@ Function   :update_process
 Descriptor :start by flag and key
 Input      :none
 Output     :none
-return     : SUCCESS_RET:   success   
+return     : SUCCESS_RET:   success
 FAILURE_RET:   failed
-Notice	   :
+Notice     :
 **********************************************************************/
 int update_process(void)
 {
 	unsigned char flag;
 	unsigned int partition,key,ext2_fs;
 	int uboot_update_flag;
-	Loader_Info_t  loader_info={0};
-	unsigned char spi_loaderinfo_ini[8]={0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
+	Loader_Info_t loader_info = {0};
+	unsigned char spi_loaderinfo_ini[8] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
 
-	init_pio();    
+	init_pio();
 	init_led();
 
 	flag = ReadSPIFlashDataByChar(IPTV_FLAG_ADDR);
 
 	/* press down the key more than 3s; green led flash 3 times */
-	key = check_key_press();  
+	key = check_key_press();
 
 	/* let led flash normal */
-	init_led();  
+	init_led();
 	smit_logo_init();
-	
+
 	/* key has been pressed more than 3s */
-	if(KEY_DOWN == key )    
+	if(KEY_DOWN == key )
 	{
 
 		/* USB config and start */
-		if (FAILURE_RET == usb_config_start(USB_EXT_REGS))	
+		if(FAILURE_RET == usb_config_start(USB_EXT_REGS))
 		{
 			return FAILURE_RET;
-		}	
+		}
 
 		/* check extern usb type,ext2 or not */
 		ext2_fs = check_ext2_usb(EXT_USB_PARTITION);
 
-		if(NOT_EXT2_FS == ext2_fs) 
+		if(NOT_EXT2_FS == ext2_fs)
 		{
 			/*
-			* if usb filesystem is fat, 
+			* if usb filesystem is fat,
 			* check if the uboot update file exsit,
-			* if file exsit, do uboot updating, or recovering 
+			* if file exsit, do uboot updating, or recovering
 			*/
 			uboot_update_flag = uboot_update(flag);
-			if(ABNORMITY_RET == uboot_update_flag)  
+			if(ABNORMITY_RET == uboot_update_flag)
 			{
 				if(NORMAL_START != flag)
 				{
 					WriteSPIFlashDataByChar(IPTV_FLAG_ADDR,NORMAL_START);
 				}
-				smit_restartST40();  
+				smit_restartST40();
 			}
 
 			/* uboot update fail, file or crc error */
-			else if(FAILURE_RET == uboot_update_flag)  
-			{  
-				if ( FAILURE_RET == usb_config_start(USB_INT_REGS))	
+			else if(FAILURE_RET == uboot_update_flag)
+			{
+				if(FAILURE_RET == usb_config_start(USB_INT_REGS))
 				{
 					return FAILURE_RET;
 				}
-				ext2_fs = check_ext2_usb(INT_USB_PARTITION_BACKUP);  
-				if(ext2_fs == RIGHT_EXT2_FS)  
+				ext2_fs = check_ext2_usb(INT_USB_PARTITION_BACKUP);
+				if(ext2_fs == RIGHT_EXT2_FS)
 				{
 					if(ONEKEY_RECOVER != flag)
 					{
@@ -8817,17 +8817,17 @@ int update_process(void)
 				}
 
 				/* load failed, not ext2 or ext2 file wrong */
-				else 
+				else
 				{
-					set_led_flash(GB620_RED_LED,ALL_WARING_TIME_SEC,GB620_LED_FLASH_ALL);  
+					set_led_flash(GB620_RED_LED,ALL_WARING_TIME_SEC,GB620_LED_FLASH_ALL);
 				}
 			}
 		}
 
 		/* ext2 filesystem */
-		else 
+		else
 		{
-			if(RIGHT_EXT2_FS == ext2_fs)  
+			if(RIGHT_EXT2_FS == ext2_fs)
 			{
 				if(EXT_EXT2_USB != flag)
 				{
@@ -8838,7 +8838,7 @@ int update_process(void)
 			}
 
 			/* ext2 filesystem, but the file is wrong or not exist */
-			else if(WRONG_EXT2_FS == ext2_fs)  
+			else if(WRONG_EXT2_FS == ext2_fs)
 			{
 				set_led_flash(GB620_RED_LED,ALL_WARING_TIME_SEC,GB620_LED_FLASH_ALL);
 			}
@@ -8850,81 +8850,81 @@ int update_process(void)
 	{
 		if(cfg_7105_usb_ohci_regs != USB_INT_REGS)
 		{
-			if (FAILURE_RET == usb_config_start(USB_INT_REGS))	
+			if(FAILURE_RET == usb_config_start(USB_INT_REGS))
 			{
 				return FAILURE_RET;
 			}
 		}
-		
+
 		/* for nfs, only used by designer */
-		if (100 == flag)
+		if(100 == flag)
 		{
-			setenv("bootcmd", "ext2load usb 0:2 80000000 vmlinux.ub; bootm 80000000"); 
+			setenv("bootcmd", "ext2load usb 0:2 80000000 vmlinux.ub; bootm 80000000");
 			return FAILURE_RET;
-		} 
-		
+		}
+
 		/* if find abnormal flag, change to normal */
-		if ((NORMAL_START != flag)&&(ONEKEY_RECOVER != flag)&&(EXT_EXT2_USB != flag)&&(NET_UPGRADE_RUNNING != flag))  
+		if((NORMAL_START != flag) && (ONEKEY_RECOVER != flag) && (EXT_EXT2_USB != flag) && (NET_UPGRADE_RUNNING != flag))
 		{
 			WriteSPIFlashDataByChar(IPTV_FLAG_ADDR,NORMAL_START);
-			flag = NORMAL_START;  
+			flag = NORMAL_START;
 		}
 
 		/* start normal */
-		if(NORMAL_START == flag)  
-		{             
+		if(NORMAL_START == flag)
+		{
 			/* check running patition of inside usb */
 			ext2_fs = check_ext2_usb(INT_USB_PARTITION_RUNNING);
 
 			/* load Kernel&FS of inside usb succeed */
-			if(RIGHT_EXT2_FS == ext2_fs)  
+			if(RIGHT_EXT2_FS == ext2_fs)
 			{
-				partition = INT_USB_PARTITION_RUNNING; 
+				partition = INT_USB_PARTITION_RUNNING;
 			}
-			else 
+			else
 			{
 				set_led_flash(GB620_RED_LED,ALL_WARING_TIME_SEC,GB620_LED_FLASH_ALL);
 			}
 		}
 
 		/* factory mode */
-		if(EXT_EXT2_USB == flag)  
-		{  
-			if ( FAILURE_RET == usb_config_start(USB_EXT_REGS))			
+		if(EXT_EXT2_USB == flag)
+		{
+			if(FAILURE_RET == usb_config_start(USB_EXT_REGS))
 			{
 				return FAILURE_RET;
 			}
 			ext2_fs = check_ext2_usb(EXT_USB_PARTITION);
 
 			/* if you insert a right extern usb, goto extern usb system */
-			if(RIGHT_EXT2_FS == ext2_fs)  
+			if(RIGHT_EXT2_FS == ext2_fs)
 			{
 				partition = EXT_USB_PARTITION;
 			}
 
 			/* if no extern usb, switch to inside usb system */
-			else 
+			else
 			{
-				if ( FAILURE_RET == usb_config_start(USB_INT_REGS))		
+				if(FAILURE_RET == usb_config_start(USB_INT_REGS))
 				{
 					return FAILURE_RET;
 				}
 
 				/* check the running and backup partion of inside usb */
-				ext2_fs = check_ext2_usb(INT_USB_PARTITION_RUNNING);  
+				ext2_fs = check_ext2_usb(INT_USB_PARTITION_RUNNING);
 				if(RIGHT_EXT2_FS == ext2_fs)
 				{
-					ext2_fs = check_ext2_usb(INT_USB_PARTITION_BACKUP); 
-				}      
-				if(RIGHT_EXT2_FS == ext2_fs)  
-				{ 
+					ext2_fs = check_ext2_usb(INT_USB_PARTITION_BACKUP);
+				}
+				if(RIGHT_EXT2_FS == ext2_fs)
+				{
 					/*
 					* read the address of 0x95000 of spi flash,
 					* the address is used to save the loader info,
 					* which is writed on the end of factory updating
 					*/
 					memset((void*)(&loader_info),0,sizeof(loader_info));
-					ReadSPIFlashDataToBuffer(SPI_LOADER_INFO, (unsigned char *)(&loader_info), sizeof(loader_info));            
+					ReadSPIFlashDataToBuffer(SPI_LOADER_INFO, (unsigned char *)(&loader_info), sizeof(loader_info));
 					if((memcpy(loader_info.aAppVer,spi_loaderinfo_ini,8)==0)
 						&&(memcpy(loader_info.aLoaderVer,spi_loaderinfo_ini,8)==0))
 					{
@@ -8934,37 +8934,37 @@ int update_process(void)
 					{
 						WriteSPIFlashDataByChar(IPTV_FLAG_ADDR,NORMAL_START);
 						flag = NORMAL_START;
-						partition = INT_USB_PARTITION_RUNNING; 
-					}                    
+						partition = INT_USB_PARTITION_RUNNING;
+					}
 				}
 
 				/* this mode maybe worker forget to connect extern ext3 usb */
-				else  
+				else
 				{
 					set_led_flash(GB620_RED_LED,ALL_WARING_TIME_SEC,GB620_LED_FLASH_ALL);
 				}
-			} 
+			}
 		}
 
 		/* net_update mode: when flag value is 4 or 2, start from inside usb backup partition */
 		if( (NET_UPGRADE_RUNNING == flag) || (ONEKEY_RECOVER == flag) )
 		{
-			ext2_fs = check_ext2_usb(INT_USB_PARTITION_BACKUP);  
-			if(RIGHT_EXT2_FS == ext2_fs)  
+			ext2_fs = check_ext2_usb(INT_USB_PARTITION_BACKUP);
+			if(RIGHT_EXT2_FS == ext2_fs)
 			{
 				partition = INT_USB_PARTITION_BACKUP;
 			}
 
 			/* load failed, not ext2 or ext2 file is wrong */
-			else 
+			else
 			{
 				WriteSPIFlashDataByChar(IPTV_FLAG_ADDR,NORMAL_START);
-				set_led_flash(GB620_RED_LED,ALL_WARING_TIME_SEC,GB620_LED_FLASH_ALL);  
+				set_led_flash(GB620_RED_LED,ALL_WARING_TIME_SEC,GB620_LED_FLASH_ALL);
 			}
 		}
-	} 
+	}
 	/* end else */
-	if((partition != 1)&&(partition != 2))
+	if((partition != 1) && (partition != 2))
 	{
 		return FAILURE_RET;
 	}
@@ -8975,7 +8975,7 @@ int update_process(void)
 }
 
 U_BOOT_CMD(
-		   logo,    1,    0,    smit_logo_init,
-		   "logo	- show logo\n",""
-		   );
+	logo,    1,    0,    smit_logo_init,
+	"logo	- show logo\n",""
+	);
 

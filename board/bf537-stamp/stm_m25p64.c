@@ -262,7 +262,7 @@ ERROR_CODE GetSectorNumber(unsigned long ulOffset, int *pnSector)
 	return ErrorCode;
 }
 
- ERROR_CODE EraseBlock(int nBlock)
+ERROR_CODE EraseBlock(int nBlock)
 {
 	unsigned long ulSectorOff = 0x0, ShiftValue;
 	ERROR_CODE ErrorCode = NO_ERR;

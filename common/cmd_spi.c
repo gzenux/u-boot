@@ -60,10 +60,10 @@ static uchar din[MAX_SPI_BYTES];
 
 int do_spi (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 {
-	uchar  *cp = 0;
+	uchar *cp = 0;
 	uchar tmp;
-	int   j;
-	int   rcode = 0;
+	int j;
+	int rcode = 0;
 
 	/*
 	 * We use the last specified parameters, unless new ones are
@@ -85,6 +85,7 @@ int do_spi (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 				if(tmp > 15)
 					tmp -= ('a' - 'A');
 				if(tmp > 15) {
+					//printf("Hex conversion error on %c, giving up.\n", *cp);
 					return 1;
 				}
 				if((j % 2) == 0)
@@ -96,17 +97,30 @@ int do_spi (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	}
 
 	if ((device < 0) || (device >=  spi_chipsel_cnt)) {
+		//printf("Invalid device %d, giving up.\n", device);
 		return 1;
 	}
 	if ((bitlen < 0) || (bitlen >  (MAX_SPI_BYTES * 8))) {
+		//printf("Invalid bitlen %d, giving up.\n", bitlen);
 		return 1;
 	}
 
+#if 0
+	debug ("spi_chipsel[%d] = %08X\n",
+		device, (uint)spi_chipsel[device]);
+#endif
 
 	if(spi_xfer(spi_chipsel[device], bitlen, dout, din) != 0) {
+		//printf("Error with the SPI transaction.\n");
 		rcode = 1;
 	} else {
 		cp = din;
+#if 0
+		for(j = 0; j < ((bitlen + 7) / 8); j++) {
+			printf("%02X", *cp++);
+		}
+		printf("\n");
+#endif
 	}
 
 	return rcode;
@@ -114,12 +128,12 @@ int do_spi (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 
 int do_update_spi (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 {
-	unsigned char StartAddr[10]={0};
-	unsigned char *DataBufferAddr=NULL;
+	unsigned char StartAddr[10] = {0};
+	unsigned char *DataBufferAddr = NULL;
 	char *str_filesize = NULL;
-	unsigned long file_size=0;
-	
-	DataBufferAddr=(unsigned char *)0x80000000;
+	unsigned long file_size = 0;
+
+	DataBufferAddr = (unsigned char *)0x80000000;
 
 	str_filesize = getenv("filesize");
 	if (NULL == str_filesize) {
@@ -127,33 +141,32 @@ int do_update_spi (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 
 	file_size = simple_strtoul(str_filesize, NULL, 16);
 	spi_write(StartAddr, 1, DataBufferAddr , file_size);
-	return 0;	
+	return 0;
 }
 
 extern int do_auto_update_uboot_to_spi (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 {
-	unsigned char StartAddr[10]={0};
-	unsigned char *DataBufferAddr=NULL;
+	unsigned char StartAddr[10] = {0};
+	unsigned char *DataBufferAddr = NULL;
 	char *str_filesize = NULL;
-	unsigned long file_size=0;
-	
-	DataBufferAddr=(unsigned char *)(0x80000000+argc);
+	unsigned long file_size = 0;
 
-	file_size =flag;
-	spi_write(StartAddr, 1, DataBufferAddr , file_size);
+	DataBufferAddr = (unsigned char *)(0x80000000+argc);
+
+	file_size = flag;
+	spi_write(StartAddr, 1, DataBufferAddr, file_size);
 	return 0;
-	
 }
 
 extern unsigned char ReadSPIFlashDataByChar(unsigned int AddressOfFlag)
 {
-	unsigned char  CharData;
-	unsigned char  StartAddr[3];
+	unsigned char CharData;
+	unsigned char StartAddr[3];
 
-	StartAddr[0]=(AddressOfFlag>>16)&0xff;
-	StartAddr[1]=(AddressOfFlag>>8)&0xff;
-	StartAddr[2]=AddressOfFlag&0xff;
-	
+	StartAddr[0] = (AddressOfFlag>>16)&0xff;
+	StartAddr[1] = (AddressOfFlag>>8)&0xff;
+	StartAddr[2] = AddressOfFlag&0xff;
+
 	spi_read(StartAddr, 3, &CharData, 1);
 
 	return CharData;
@@ -161,29 +174,28 @@ extern unsigned char ReadSPIFlashDataByChar(unsigned int AddressOfFlag)
 
 extern unsigned char WriteSPIFlashDataByChar(unsigned int AddressOfFlag, unsigned char Data)
 {
-	unsigned char  CharData;
-	unsigned char  StartAddr[3];
+	unsigned char CharData;
+	unsigned char StartAddr[3];
 
-	CharData=Data;
-	StartAddr[0]=(AddressOfFlag>>16)&0xff;
-	StartAddr[1]=(AddressOfFlag>>8)&0xff;
-	StartAddr[2]=AddressOfFlag&0xff;
-		
+	CharData = Data;
+	StartAddr[0] = (AddressOfFlag>>16)&0xff;
+	StartAddr[1] = (AddressOfFlag>>8)&0xff;
+	StartAddr[2] = AddressOfFlag&0xff;
+
 	spi_write(StartAddr, 3, &CharData, 1);
-	
+
 	return 0;
 }
 
-
 extern unsigned char ReadSPIFlashDataToBuffer(unsigned int AddressOfFlag, unsigned char *buffer, unsigned int length)
 {
-	unsigned char  CharData;
-	unsigned char  StartAddr[3];
+	unsigned char CharData;
+	unsigned char StartAddr[3];
 
-	StartAddr[0]=(AddressOfFlag>>16)&0xff;
-	StartAddr[1]=(AddressOfFlag>>8)&0xff;
-	StartAddr[2]=AddressOfFlag&0xff;
-	
+	StartAddr[0] = (AddressOfFlag>>16)&0xff;
+	StartAddr[1] = (AddressOfFlag>>8)&0xff;
+	StartAddr[2] = AddressOfFlag&0xff;
+
 	spi_read(StartAddr, 3, buffer, length);
 
 	return CharData;
@@ -191,23 +203,22 @@ extern unsigned char ReadSPIFlashDataToBuffer(unsigned int AddressOfFlag, unsign
 
 extern unsigned char WriteSPIFlashDataFromBuffer(unsigned int AddressOfFlag, unsigned char *buffer, unsigned int length)
 {
-	unsigned char  CharData;
+	unsigned char CharData;
+	unsigned char StartAddr[3];
 
-	unsigned char  StartAddr[3];
-	
-	StartAddr[0]=(AddressOfFlag>>16)&0xff;
-	StartAddr[1]=(AddressOfFlag>>8)&0xff;
-	StartAddr[2]=AddressOfFlag&0xff;
-		
+	StartAddr[0] = (AddressOfFlag>>16)&0xff;
+	StartAddr[1] = (AddressOfFlag>>8)&0xff;
+	StartAddr[2] = AddressOfFlag&0xff;
+
 	spi_write(StartAddr, 3, buffer, length);
-	
+
 	return 0;
 }
 
 int do_update_flag (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 {
-	unsigned int PushUpdateFlag=0xfbcdbcdf;
-	unsigned int StartAddr=0x90000;  
+	unsigned int PushUpdateFlag = 0xfbcdbcdf;
+	unsigned int StartAddr = 0x90000;
 
 	WriteSPIFlashDataFromBuffer(StartAddr, &PushUpdateFlag, 4);
 	return 0;
@@ -219,66 +230,62 @@ extern void EraseSPIDataByAddr(unsigned int Addr, unsigned int len)
 	unsigned char Buffer[0x10000];
 
 	memset(Buffer, 0xff, 0x10000);
-	StartAddr =Addr ;
-	
-	WriteSPIFlashDataFromBuffer(StartAddr, Buffer, len);
+	StartAddr = Addr;
 
+	WriteSPIFlashDataFromBuffer(StartAddr, Buffer, len);
 }
 
-static void  do_EraseSPIDataByAddr(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
+static void do_EraseSPIDataByAddr(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 {
-	int nBlockNum=-1;
-	unsigned int StartAddr=0x80000;
-	unsigned int Len=0;
+	int nBlockNum = -1;
+	unsigned int StartAddr = 0x80000;
+	unsigned int Len = 0;
 	unsigned char Buffer[0x10000];
 
 	memset(Buffer, 0xff, 0x10000);
 	StartAddr = simple_strtoul(argv[1], NULL, 16);
 	Len = simple_strtoul(argv[2], NULL, 16);
 
-	WriteSPIFlashDataFromBuffer(StartAddr, Buffer, Len);	
+	WriteSPIFlashDataFromBuffer(StartAddr, Buffer, Len);
 }
-static void  do_ChangeFlag(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
-{
 
-	unsigned int StartAddr=0x90000;
-    unsigned int date=0;
+static void do_ChangeFlag(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
+{
+	unsigned int StartAddr = 0x90000;
+	unsigned int date = 0;
 
 	date = simple_strtoul(argv[1], NULL, 10);
-    WriteSPIFlashDataByChar(StartAddr, date);	
+	WriteSPIFlashDataByChar(StartAddr, date);
 }
-static void  do_ChangeMacAddr(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
+
+static void do_ChangeMacAddr(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 {
-	int nBlockNum=-1;
-	unsigned int Len=0;
+	int nBlockNum = -1;
+	unsigned int Len = 0;
 	unsigned char Buffer[30];
-	unsigned int 	StartAddr=0xa0000+19;
-	unsigned int   Time=0;
-	unsigned int j=0;
+	unsigned int StartAddr = 0xa0000 + 19;
+	unsigned int Time = 0;
+	unsigned int j = 0;
 
 	memset(Buffer, 0xff, sizeof(Buffer));
 
-	j=0;
-	for(Time=0; Time<12; Time++)
-		{
-		     for(; j<100;)
-			{
-				if(isxdigit(argv[1][j]))
-					break;
-				else
-					{
-						j++;
-						continue;
-					}
+	j = 0;
+	for(Time = 0; Time < 12; Time++) {
+		for(; j < 100;) {
+			if(isxdigit(argv[1][j])) {
+				break;
+			} else {
+				j++;
+				continue;
 			}
-		     
-			Buffer[Time]=argv[1][j];
-			j++;
 		}
 
-	WriteSPIFlashDataFromBuffer(StartAddr, Buffer, 12);	
-}
+		Buffer[Time] = argv[1][j];
+		j++;
+	}
 
+	WriteSPIFlashDataFromBuffer(StartAddr, Buffer, 12);
+}
 
 /***************************************************/
 
@@ -325,5 +332,5 @@ U_BOOT_CMD(
 	changeflag,	 2,	1,	do_ChangeFlag,
 	"changeflag  date - change flag to SPI Flash  ep:changeflag 255\n",
 	NULL
-	);	
+	);
 

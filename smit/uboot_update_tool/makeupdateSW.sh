@@ -69,7 +69,7 @@ read -p "InputInfoNoError =" InputInfoNoError
 if [ "$InputInfoNoError" = y ]
 	then
 	echo "Call MakeBinFile:"
-./MakeBinFile  $UPDATEUBOOT $UBOOT_VER $HW_VER $DEV_ID $FAC_ID $DATE  
+./MakeBinFile  $UPDATEUBOOT $UBOOT_VER $HW_VER $DEV_ID $FAC_ID $DATE
 
 else
 	echo "Please retry!!!"

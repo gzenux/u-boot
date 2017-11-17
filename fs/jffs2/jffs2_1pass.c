@@ -187,7 +187,7 @@ static int read_nand_cached(u32 off, u32 size, u_char *buf)
 {
 	struct mtdids *id = current_part->dev->id;
 	u32 bytes_read = 0;
-	int ReadOK=-1;
+	int ReadOK = -1;
 #if defined(CFG_NAND_LEGACY)
 	size_t retlen;
 #else
@@ -214,17 +214,16 @@ static int read_nand_cached(u32 off, u32 size, u_char *buf)
 			if (read_jffs2_nand(nand_cache_off, NAND_CACHE_SIZE,
 						&retlen, nand_cache, id->num) < 0 ||
 					retlen != NAND_CACHE_SIZE) {
-				printf("read_nand_cached0: error reading nand off %#x size 0x%xbytes, retlen=0x%x \n",
+				printf("read_nand_cached0: error reading nand off %#x size 0x%x bytes, retlen=0x%x \n",
 						nand_cache_off, NAND_CACHE_SIZE, retlen);
 				return -1;
 			}
 #else
 			retlen = NAND_CACHE_SIZE;
-			ReadOK=nand_read(&nand_info[id->num], nand_cache_off,&retlen, nand_cache);
-			if ( ReadOK!= 0 ||
-					retlen != NAND_CACHE_SIZE) {
-				printf("read_nand_cached1: error ReadOK=0x%x reading nand off %#x size 0x%xbytes, retlen=0x%x \n",ReadOK,
-						nand_cache_off, NAND_CACHE_SIZE, retlen);
+			ReadOK = nand_read(&nand_info[id->num], nand_cache_off, &retlen, nand_cache);
+			if (ReadOK != 0 || retlen != NAND_CACHE_SIZE) {
+				printf("read_nand_cached1: error ReadOK=0x%x reading nand off %#x size 0x%x bytes, retlen=0x%x \n",
+						ReadOK, nand_cache_off, NAND_CACHE_SIZE, retlen);
 				return -1;
 			}
 #endif

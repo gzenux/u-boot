@@ -15,25 +15,25 @@
 extern "C"{
 #endif
 
-#define SHA1_KEY_LENGTH            20
+#define SHA1_KEY_LENGTH          20
 #define SHA256_KEY_LENGTH        32
 extern unsigned char sha256_key[SHA256_KEY_LENGTH];
 
 /////////////////////////////////////////////////////////////////////////
-///////                     Api for CIPLUS                     //////////   
+///////                     Api for CIPLUS                     //////////
 /////////////////////////////////////////////////////////////////////////
 
 
 //sha1 algorithm
-unsigned long soft_sha_1(unsigned char *i_pdata, 
-						 	 unsigned long  i_udatalen,
-           				   			unsigned char *o_pdata);
+unsigned long soft_sha_1(unsigned char *i_pdata,
+			  unsigned long  i_udatalen,
+			  unsigned char *o_pdata);
 
 
 //sha256 algorithm
-unsigned long soft_sha_256(unsigned char *i_pdata, 
-							 	 unsigned long  i_udatalen,
-           					 			unsigned char *o_pdata);
+unsigned long soft_sha_256(unsigned char *i_pdata,
+			    unsigned long  i_udatalen,
+			    unsigned char *o_pdata);
 
 
 #ifdef __cplusplus

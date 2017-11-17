@@ -109,7 +109,7 @@ POKE32(0xfe00112c, 0x00001af4)
 POKE32(0xfe00112c, 0x00000af4)
 
 /*stx7105_sysconf_regs.SYSCONF_STA3*/
-WHILE_NE32(0xfe001014, 0x00000001, 0x00000000)    
+WHILE_NE32(0xfe001014, 0x00000001, 0x00000000)
 
 
 /*set_lmi2x_freq: freq=800.000 rdiv=0x3, ddiv=0x50 Clock frequencies*/

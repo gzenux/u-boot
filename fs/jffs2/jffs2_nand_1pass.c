@@ -326,7 +326,7 @@ jffs2_1pass_read_inode(struct b_lists *pL, u32 ino, char *dest,
 			dst = (char *) (dest + inode->offset);
 
 			switch (inode->compr) {
-					printf("###jNode->compr=%d###\n", jNode->compr);
+				printf("###jNode->compr=%d###\n", jNode->compr);
 			case JFFS2_COMPR_NONE:
 				ret = 0;
 				memcpy(dst, src, inode->dsize);

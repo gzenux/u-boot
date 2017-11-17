@@ -232,7 +232,7 @@ static inline void TxCharReady (void)
 		status = p2_inl (UART_STATUS_REG);
 	} while (status & STA_TF);
 }
-static unsigned int controlReg2=0;
+static unsigned int controlReg2 = 0;
 /* initialize the ASC */
 extern int serial_init (void)
 {
@@ -240,7 +240,7 @@ extern int serial_init (void)
 	const int cflag = CREAD | HUPCL | CLOCAL | CSTOPB | CS8 | PARODD;
 	unsigned long val;
 	int baud = gd->baudrate;
-	int t, mode=1;
+	int t, mode = 1;
 
 	switch (baud) {
 	case 9600:
@@ -312,7 +312,7 @@ extern int serial_init (void)
 
 	/* finally, write value and enable ASC */
 	p2_outl (UART_CONTROL_REG, val);
-	controlReg2=val;
+	controlReg2 = val;
 	return 0;
 }
 
@@ -323,11 +323,11 @@ int serial_init_pio5 (void)
 	const int cflag = CREAD | HUPCL | CLOCAL | CSTOPB | CS8 | PARODD;
 	unsigned long val;
 	int baud = gd->baudrate;
-	int t, mode=1;
+	int t, mode = 1;
 
 
-	baud=9600;
-    
+	baud = 9600;
+
 	switch (baud) {
 	case 9600:
 		t = BAUDRATE_VAL_M0(9600);
@@ -500,10 +500,10 @@ void serial_puts_pio5 (const char *s)
 }
 
 static void send_8byte(unsigned char *buff)
-{		
+{
 	unsigned char i;
 	int rc;
-	
+
 	for(i = 0; i < 8; i++)
 	{
 		serial_putc_pio5(buff[i]);
@@ -513,7 +513,7 @@ static void send_8byte(unsigned char *buff)
 unsigned char decode(unsigned char ch)
 {
 	unsigned char	code;
-	
+
 	switch(ch)
 	{
 		case '0':
@@ -652,44 +652,44 @@ unsigned char decode(unsigned char ch)
 Call this function to set the content to be displayed on the fpn.
 for example, "f.1.08".
 */
-unsigned char  decode_str(unsigned char *fpn_str, unsigned char *decode_buf/*4 bytes*/)
+unsigned char decode_str(unsigned char *fpn_str, unsigned char *decode_buf/*4 bytes*/)
 {
 	unsigned char rc = 0;
 	int	fpn_str_len;
 	int	f, l, i;
 	char	local_str[9];
 	char	local_str2[9];
-	
-	for(i = 0; i < 9; i ++)
+
+	for(i = 0; i < 9; i++)
 	{
 		local_str[i] = ' ';
-	}	
-	fpn_str_len = strlen(fpn_str); 
-	
-	for(f = 0, l = 0; f < fpn_str_len && l < 9; )
+	}
+	fpn_str_len = strlen(fpn_str);
+
+	for(f = 0, l = 0; f < fpn_str_len && l < 9;)
 	{
 		if('.' == fpn_str[f])
 		{
 			if(f == 0)
 			{
 				local_str[l] = ' ';
-				l ++;
+				l++;
 				local_str[l] = '.';
-				l ++;
+				l++;
 			}
 			else
 			{
 				if(fpn_str[f - 1] == '.')
 				{
 					local_str[l] = ' ';
-					l ++;
+					l++;
 					local_str[l] = '.';
-					l ++;
+					l++;
 				}
 				else
 				{
 					local_str[l] = '.';
-					l ++;
+					l++;
 				}
 
 			}
@@ -699,9 +699,9 @@ unsigned char  decode_str(unsigned char *fpn_str, unsigned char *decode_buf/*4 b
 			if(f == (fpn_str_len - 1))
 			{
 				local_str[l] = fpn_str[f];
-				l ++;
+				l++;
 				local_str[l] = ' ';
-				l ++;
+				l++;
 				break;
 			}
 			else
@@ -709,44 +709,44 @@ unsigned char  decode_str(unsigned char *fpn_str, unsigned char *decode_buf/*4 b
 				if(fpn_str[f + 1] == '.')
 				{
 					local_str[l] = fpn_str[f];
-					l ++;
+					l++;
 				}
 				else
 				{
 					local_str[l] = fpn_str[f];
-					l ++;
+					l++;
 					local_str[l] = ' ';
-					l ++;
+					l++;
 				}
 			}
 		}
-		
-		f ++;
+
+		f++;
 	}
 
-	local_str[8]=0;
-	for(i = 0; i < 4; i ++)
+	local_str[8] = 0;
+	for(i = 0; i < 4; i++)
 	{
 		decode_buf[i] = decode(local_str[2 * i]);
-		
+
 		decode_buf[i] |= 0x80;
 
 		if('.' == local_str[2 * i + 1])
 		decode_buf[i] &= 0x7f;
-		
+
 		if(decode_buf[i] == FPN_ERR_SYMBOL)
 		{
-			rc ++;//error increase
+			rc++;//error increase
 		}
 		local_str2[i] = decode_buf[i];
 	}
-	
+
 	return rc;
 }
 
 unsigned short get_crc16(unsigned char *data_blk_ptr,unsigned char data_blk_size)
-{       
-	unsigned short crc_return;   
+{
+	unsigned short crc_return;
 	unsigned char CRC16Lo=INI_VECTORLo;
 	unsigned char CRC16Hi=INI_VECTORHi;
 	unsigned char SaveHi,SaveLo;
@@ -754,42 +754,42 @@ unsigned short get_crc16(unsigned char *data_blk_ptr,unsigned char data_blk_size
 	for (i = 0; i < data_blk_size; i++)
 	{
 		CRC16Lo = CRC16Lo ^ *data_blk_ptr++;
-		for ( j = 0;  j < 8;  j++ )
+		for (j = 0; j < 8; j++ )
 		{
 			SaveHi = CRC16Hi;
 			SaveLo = CRC16Lo;
 			CRC16Hi = CRC16Hi >>1;
 			CRC16Lo = CRC16Lo >>1;
 			if ((SaveHi & 0x1) == 0x1)
-			{ 
+			{
 				CRC16Lo = CRC16Lo | 0x80;
 			}
-			if ((SaveLo & 0x1) == 0x1) 
-			{ 
+			if ((SaveLo & 0x1) == 0x1)
+			{
 				CRC16Hi = CRC16Hi ^ POLYNOMIALHi;
 				CRC16Lo = CRC16Lo ^ POLYNOMIALLo;
 			}
 		}
 	}
-	crc_return=CRC16Hi * 256 + CRC16Lo;
-	return (crc_return); 
+	crc_return = CRC16Hi * 256 + CRC16Lo;
+	return (crc_return);
 }
 
 void send_sys_code(void)
 {
 	unsigned char out[8], in[2];
 	unsigned short crc;
-	
+
 	out[0] = START_BYTE;
 	out[1] = SYS_CODE_TAG;
-	
+
 	out[2] = SYS_CODE1;
 	out[3] = SYS_CODE2;
 	out[4] = 0xff;
 	out[5] = 0xff;
 
 	crc = get_crc16(out, 6);
-	
+
 	out[6] = crc & 0xff;
 	out[7] = (crc >> 8) & 0xff;
 
@@ -803,42 +803,42 @@ extern void send_dspl_info(unsigned char *str)
 
 void F450_enable(void)
 {
-	int	ErrorCode;
-	unsigned char 	out[8];
+	int		ErrorCode;
+	unsigned char	out[8];
 	unsigned short	crc;
-	
+
 	out[0] = START_BYTE;
 	out[1] = HOST_CMD_TAG;
-	
+
 	out[2] = SET_APP_RUN_FLG_CMD;
 	out[3] = 0xff;
 	out[4] = 0xff;
 	out[5] = 0xff;
 
 	crc = get_crc16(out, 6);
-	
+
 	out[6] = crc & 0xff;
 	out[7] = (crc >> 8) & 0xff;
 
-	send_8byte(out);	
+	send_8byte(out);
 }
 
 void F450_disable(void)
 {
-	int	ErrorCode;
-	unsigned char 	out[8];
+	int		ErrorCode;
+	unsigned char	out[8];
 	unsigned short	crc;
-	
+
 	out[0] = START_BYTE;
 	out[1] = HOST_CMD_TAG;
-	
+
 	out[2] = CLS_APP_RUN_FLG_CMD;
 	out[3] = 0xff;
 	out[4] = 0xff;
 	out[5] = 0xff;
 
 	crc = get_crc16(out, 6);
-	
+
 	out[6] = crc & 0xff;
 	out[7] = (crc >> 8) & 0xff;
 
@@ -847,7 +847,7 @@ void F450_disable(void)
 
 void do_displayFPN(void)
 {
-	char TestStr[]="4567";
+	char TestStr[] = "4567";
 	send_dspl_info(TestStr);
 }
 
@@ -859,7 +859,7 @@ U_BOOT_CMD(
 
 void serial_setbrg_pio5 (void)
 {
-  serial_init_pio5();
+	serial_init_pio5();
 }
 #ifdef CONFIG_HWFLOW
 extern int hwflow_onoff (int on)

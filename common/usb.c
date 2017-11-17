@@ -171,10 +171,10 @@ int usb_control_msg(struct usb_device *dev, unsigned int pipe,
 			unsigned short value, unsigned short index,
 			void *data, unsigned short size, int timeout)
 {
-	if((timeout==0)&&(!asynch_allowed)) /* request for a asynch control pipe is not allowed */
-    {
+	if((timeout==0) && (!asynch_allowed)) /* request for a asynch control pipe is not allowed */
+	{
 		return -1;
-    }
+	}
 	/* set setup command */
 	setup_packet.requesttype = requesttype;
 	setup_packet.request = request;
@@ -186,7 +186,7 @@ int usb_control_msg(struct usb_device *dev, unsigned int pipe,
 	dev->status=USB_ST_NOT_PROC; /*not yet processed */
 
 	submit_control_msg(dev,pipe,data,size,&setup_packet);
-	if(timeout==0) {
+	if(timeout == 0) {
 		return (int)size;
 	}
 	while(timeout--) {
@@ -194,7 +194,7 @@ int usb_control_msg(struct usb_device *dev, unsigned int pipe,
 			break;
 		wait_ms(1);
 	}
-	if(dev->status==0)
+	if(dev->status == 0)
 		return dev->act_len;
 	else {
 		return -1;
@@ -211,15 +211,15 @@ int usb_bulk_msg(struct usb_device *dev, unsigned int pipe,
 {
 	if (len < 0)
 		return -1;
-	dev->status=USB_ST_NOT_PROC; /*not yet processed */
+	dev->status = USB_ST_NOT_PROC; /*not yet processed */
 	submit_bulk_msg(dev,pipe,data,len);
 	while(timeout--) {
 		if(!((volatile unsigned long)dev->status & USB_ST_NOT_PROC))
 			break;
 		wait_ms(1);
 	}
-	*actual_length=dev->act_len;
-	if(dev->status==0)
+	*actual_length = dev->act_len;
+	if(dev->status == 0)
 		return 0;
 	else
 		return -1;
@@ -236,7 +236,7 @@ int usb_bulk_msg(struct usb_device *dev, unsigned int pipe,
  */
 int usb_maxpacket(struct usb_device *dev,unsigned long pipe)
 {
-	if((pipe & USB_DIR_IN)==0) /* direction is out -> use emaxpacket out */
+	if((pipe & USB_DIR_IN) == 0) /* direction is out -> use emaxpacket out */
 		return(dev->epmaxpacketout[((pipe>>15) & 0xf)]);
 	else
 		return(dev->epmaxpacketin[((pipe>>15) & 0xf)]);
@@ -262,23 +262,23 @@ getMaxPacketSize(const struct usb_endpoint_descriptor * const ep)
  */
 int usb_set_maxpacket(struct usb_device *dev)
 {
-	int i,ii,b;
+	int i, ii, b;
 	struct usb_endpoint_descriptor *ep;
 	short wMaxPacketSize;
 
-	for(i=0; i<dev->config.bNumInterfaces;i++) {
-		for(ii=0; ii<dev->config.if_desc[i].bNumEndpoints; ii++) {
-			ep=&dev->config.if_desc[i].ep_desc[ii];
-			b=ep->bEndpointAddress & USB_ENDPOINT_NUMBER_MASK;
-			wMaxPacketSize=getMaxPacketSize(ep);
+	for(i = 0; i<dev->config.bNumInterfaces; i++) {
+		for(ii = 0; ii<dev->config.if_desc[i].bNumEndpoints; ii++) {
+			ep = &dev->config.if_desc[i].ep_desc[ii];
+			b = ep->bEndpointAddress & USB_ENDPOINT_NUMBER_MASK;
+			wMaxPacketSize = getMaxPacketSize(ep);
 
-			if((ep->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK)==USB_ENDPOINT_XFER_CONTROL) {	/* Control => bidirectional */
+			if((ep->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) == USB_ENDPOINT_XFER_CONTROL) {	/* Control => bidirectional */
 				dev->epmaxpacketout[b] = wMaxPacketSize;
 				dev->epmaxpacketin [b] = wMaxPacketSize;
 				USB_PRINTF("##Control EP epmaxpacketout/in[%d] = %d\n",b,dev->epmaxpacketin[b]);
 			}
 			else {
-				if ((ep->bEndpointAddress & 0x80)==0) { /* OUT Endpoint */
+				if ((ep->bEndpointAddress & 0x80) == 0) { /* OUT Endpoint */
 					if(wMaxPacketSize > dev->epmaxpacketout[b]) {
 						dev->epmaxpacketout[b] = wMaxPacketSize;
 						USB_PRINTF("##EP epmaxpacketout[%d] = %d\n",b,dev->epmaxpacketout[b]);
@@ -408,7 +408,7 @@ int usb_get_descriptor(struct usb_device *dev, unsigned char type, unsigned char
  	res = usb_control_msg(dev, usb_rcvctrlpipe(dev, 0),
 			USB_REQ_GET_DESCRIPTOR, USB_DIR_IN,
 			(type << 8) + index, 0,
-			buf, size, USB_CNTL_TIMEOUT); 
+			buf, size, USB_CNTL_TIMEOUT);
 	return res;
 }
 
@@ -708,16 +708,16 @@ struct usb_device * usb_get_dev_index(int index)
 struct usb_device * usb_alloc_new_device(void)
 {
 	int i;
-
-	if(dev_index==USB_MAX_DEVICE) {
+	//USB_PRINTF("New Device %d\n",dev_index);
+	if(dev_index == USB_MAX_DEVICE) {
 		printf("ERROR, too many USB Devices, max=%d\n",USB_MAX_DEVICE);
 		return NULL;
 	}
-	usb_dev[dev_index].devnum=dev_index+1; /* default Address is 0, real addresses start with 1 */
-	usb_dev[dev_index].maxchild=0;
-	for(i=0;i<USB_MAXCHILDREN;i++)
-		usb_dev[dev_index].children[i]=NULL;
-	usb_dev[dev_index].parent=NULL;
+	usb_dev[dev_index].devnum = dev_index + 1; /* default Address is 0, real addresses start with 1 */
+	usb_dev[dev_index].maxchild = 0;
+	for(i = 0; i < USB_MAXCHILDREN; i++)
+		usb_dev[dev_index].children[i] = NULL;
+	usb_dev[dev_index].parent = NULL;
 	dev_index++;
 	return &usb_dev[dev_index-1];
 }
@@ -873,13 +873,13 @@ void usb_scan_devices(void)
 	struct usb_device *dev;
 
 	/* first make all devices unknown */
-	for(i=0;i<USB_MAX_DEVICE;i++) {
+	for(i = 0; i < USB_MAX_DEVICE; i++) {
 		memset(&usb_dev[i],0,sizeof(struct usb_device));
-		usb_dev[i].devnum=-1;
+		usb_dev[i].devnum = -1;
 	}
-	dev_index=0;
+	dev_index = 0;
 	/* device 0 is always present (root hub, so let it analyze) */
-	dev=usb_alloc_new_device();
+	dev = usb_alloc_new_device();
 	usb_new_device(dev);
 	printf("%d USB Device(s) found\n",dev_index);
 	/* insert "driver" if possible */
@@ -965,12 +965,12 @@ static void usb_hub_power_on(struct usb_hub_device *hub)
 
 void usb_hub_reset(void)
 {
-	usb_hub_index=0;
+	usb_hub_index = 0;
 }
 
 struct usb_hub_device *usb_hub_allocate(void)
 {
-	if(usb_hub_index<USB_MAX_HUB) {
+	if(usb_hub_index < USB_MAX_HUB) {
 		return &hub_dev[usb_hub_index++];
 	}
 	printf("ERROR: USB_MAX_HUB (%d) reached\n",USB_MAX_HUB);
@@ -988,7 +988,7 @@ static int hub_port_reset(struct usb_device *dev, int port,
 
 
 	USB_HUB_PRINTF("hub_port_reset: resetting port %d...\n", port);
-	for(tries=0;tries<MAX_TRIES;tries++) {
+	for(tries = 0; tries < MAX_TRIES; tries++) {
 
 		usb_set_port_feature(dev, port + 1, USB_PORT_FEAT_RESET);
 		wait_ms(200);
@@ -1017,7 +1017,7 @@ static int hub_port_reset(struct usb_device *dev, int port,
 		wait_ms(200);
 	}
 
-	if (tries==MAX_TRIES) {
+	if (tries == MAX_TRIES) {
 		USB_HUB_PRINTF("Cannot enable port %i after %i retries, disabling port.\n", port+1, MAX_TRIES);
 		USB_HUB_PRINTF("Maybe the USB cable is bad?\n");
 		return -1;
@@ -1052,7 +1052,7 @@ void usb_hub_port_connect_change(struct usb_device *dev, int port)
 
 	/* Disconnect any existing devices under this port */
 	if (((!(portstatus & USB_PORT_STAT_CONNECTION)) &&
-	     (!(portstatus & USB_PORT_STAT_ENABLE)))|| (dev->children[port])) {
+	     (!(portstatus & USB_PORT_STAT_ENABLE))) || (dev->children[port])) {
 		USB_HUB_PRINTF("usb_disconnect(&hub->children[port]);\n");
 		/* Return now if nothing is connected */
 		if (!(portstatus & USB_PORT_STAT_CONNECTION))
@@ -1069,11 +1069,11 @@ void usb_hub_port_connect_change(struct usb_device *dev, int port)
 	wait_ms(200);
 
 	/* Allocate a new device struct for it */
-	usb=usb_alloc_new_device();
+	usb = usb_alloc_new_device();
 	usb->slow = (portstatus & USB_PORT_STAT_LOW_SPEED) ? 1 : 0;
 
 	dev->children[port] = usb;
-	usb->parent=dev;
+	usb->parent = dev;
 	/* Run it through the hoops (find a driver, etc) */
 	if (usb_new_device(usb)) {
 		/* Woops, disable the port */
@@ -1092,10 +1092,10 @@ int usb_hub_configure(struct usb_device *dev)
 	struct usb_hub_device *hub;
 
 	/* "allocate" Hub device */
-	hub=usb_hub_allocate();
-	if(hub==NULL)
+	hub = usb_hub_allocate();
+	if(hub == NULL)
 		return -1;
-	hub->pusb_dev=dev;
+	hub->pusb_dev = dev;
 	/* Get the the hub descriptor */
 	if (usb_get_hub_descriptor(dev, buffer, 4) < 0) {
 		USB_HUB_PRINTF("usb_hub_configure: failed to get hub descriptor, giving up %lX\n",dev->status);
@@ -1117,17 +1117,17 @@ int usb_hub_configure(struct usb_device *dev)
 	}
 	memcpy((unsigned char *)&hub->desc,buffer,descriptor->bLength);
 	/* adjust 16bit values */
-	hub->desc.wHubCharacteristics=swap_16(descriptor->wHubCharacteristics);
+	hub->desc.wHubCharacteristics = swap_16(descriptor->wHubCharacteristics);
 	/* set the bitmap */
-	bitmap=(unsigned char *)&hub->desc.DeviceRemovable[0];
+	bitmap = (unsigned char *)&hub->desc.DeviceRemovable[0];
 	memset(bitmap,0xff,(USB_MAXCHILDREN+1+7)/8); /* devices not removable by default */
-	bitmap=(unsigned char *)&hub->desc.PortPowerCtrlMask[0];
+	bitmap = (unsigned char *)&hub->desc.PortPowerCtrlMask[0];
 	memset(bitmap,0xff,(USB_MAXCHILDREN+1+7)/8); /* PowerMask = 1B */
-	for(i=0;i<((hub->desc.bNbrPorts + 1 + 7)/8);i++) {
-		hub->desc.DeviceRemovable[i]=descriptor->DeviceRemovable[i];
+	for(i = 0; i < ((hub->desc.bNbrPorts + 1 + 7)/8); i++) {
+		hub->desc.DeviceRemovable[i] = descriptor->DeviceRemovable[i];
 	}
-	for(i=0;i<((hub->desc.bNbrPorts + 1 + 7)/8);i++) {
-		hub->desc.DeviceRemovable[i]=descriptor->PortPowerCtrlMask[i];
+	for(i = 0; i < ((hub->desc.bNbrPorts + 1 + 7)/8); i++) {
+		hub->desc.DeviceRemovable[i] = descriptor->PortPowerCtrlMask[i];
 	}
 	dev->maxchild = descriptor->bNbrPorts;
 	USB_HUB_PRINTF("%d ports detected\n", dev->maxchild);

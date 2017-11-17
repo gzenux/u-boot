@@ -165,9 +165,9 @@ static void *rx_packets[CONFIG_DMA_RX_SIZE];
 #error Need to define which PHY to use
 #endif
 
-#define PHY_DSCSR_REG		0x11		
-#define PHY_ADDR_MSK		0x01f0	
-#define PHY_ADDR_SHIFT		4	
+#define PHY_DSCSR_REG		0x11
+#define PHY_ADDR_MSK		0x01f0
+#define PHY_ADDR_SHIFT		4
 
 /* MII mode */
 #define MII_ADVERTISE_PAUSE 0x0400	/* supports the pause command */
@@ -219,9 +219,9 @@ static unsigned int stmac_phy_check_speed (int phy_addr)
 
 	/* Read Status register */
 	status = stmac_mii_read (phy_addr, MII_BMSR);
-    udelay(100000);  //ÑÓÊ±0.1S gongjia add
-    status = stmac_mii_read (phy_addr, MII_BMSR);
-    
+	udelay(100000);  //ÑÓÊ±0.1S gongjia add
+	status = stmac_mii_read (phy_addr, MII_BMSR);
+
 	printf (STMAC);
 
 	/* Check link status.  If 0, default to 100 Mbps. */

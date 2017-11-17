@@ -45,16 +45,10 @@
 #include <SvnVersion.h>
 #include <watchdog.h>
 
-
-
-
-
-
 extern ulong _uboot_end_data;
 extern ulong _uboot_end;
 
 ulong monitor_flash_len;
-
 
 #ifndef CONFIG_IDENT_STRING
 #define CONFIG_IDENT_STRING ""
@@ -69,6 +63,7 @@ const char version_string[] =
 
 #define	TOTAL_MALLOC_LEN	CFG_MALLOC_LEN
 #define	UPDATE_SW_OK 0
+
 static ulong mem_malloc_start;
 static ulong mem_malloc_end;
 static ulong mem_malloc_brk;
@@ -130,6 +125,7 @@ static int display_banner (void)
 #ifndef CFG_NO_FLASH
 static void display_flash_config (ulong size)
 {
+	//puts ("NOR:   ");
 	print_size (size, "\n");
 }
 #endif /* CFG_NO_FLASH */
@@ -196,7 +192,7 @@ void start_sh4boot (void)
 	char *s, *e;
 	int i;
 	unsigned int regsvalue;
-	unsigned char SvnVersionInFlash[16]={0};
+	unsigned char SvnVersionInFlash[16] = {0};
 
 	addr = TEXT_BASE;
 	/* Reserve memory for malloc() arena. */
@@ -252,8 +248,8 @@ void start_sh4boot (void)
 	mem_malloc_init ();
 
 #if defined(CONFIG_SPI)
+	//puts ("SPI:  ");
 	spi_init ();		/* go init the SPI */
-
 #if defined(CFG_ENV_IS_IN_EEPROM) && !defined(CFG_BOOT_FROM_SPI)
 	env_init_after_spi_done ();
 #endif
@@ -310,26 +306,27 @@ void start_sh4boot (void)
 
 #if defined(CONFIG_CMD_NET)
 #if defined(CONFIG_NET_MULTI)
+	//puts ("Net:   ");
 #endif
 	eth_initialize(gd->bd);
 #endif
-    regsvalue = smit_readl(0xfe00112c);
+	regsvalue = smit_readl(0xfe00112c);
 
 	/*0xb0000 --0xb0010  svn version*/
 	ReadSPIFlashDataToBuffer(0x97000, SvnVersionInFlash, 15);
-	SvnVersionInFlash[15]=0;
-    printf("Svn Version: %s\n", SvnVersionInFlash);
+	SvnVersionInFlash[15] = 0;
+	printf("Svn Version: %s\n", SvnVersionInFlash);
 
-	if(0 != strncmp(CURRENTSVNVERSION, SvnVersionInFlash, strlen(CURRENTSVNVERSION)))
-	{
+	if(0 != strncmp(CURRENTSVNVERSION, SvnVersionInFlash, strlen(CURRENTSVNVERSION))) {
 		memset(SvnVersionInFlash, 0, 16);
 		sprintf(SvnVersionInFlash, "%s", CURRENTSVNVERSION);
-		SvnVersionInFlash[15]=0;		
+		SvnVersionInFlash[15] = 0;
 		WriteSPIFlashDataFromBuffer(0x97000, SvnVersionInFlash, 16);
 	}
-    /* iptv project */
-    update_process();
-	
+
+	/* iptv project */
+	update_process();
+
 	/* main_loop() can return to retry autoboot, if so just run it again. */
 	for (;;) {
 		main_loop ();
@@ -341,6 +338,7 @@ void start_sh4boot (void)
 
 void hang (void)
 {
+	//puts ("### ERROR ### Please RESET the board ###\n");
 	for (;;);
 }
 
@@ -381,6 +379,6 @@ static void sh_reset (void)
 extern int do_reset (cmd_tbl_t * cmdtp, int flag, int argc, char *argv[])
 {
 	sh_reset();
-	/*NOTREACHED*/ 
+	/*NOTREACHED*/
 	return (0);
 }

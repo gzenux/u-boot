@@ -59,10 +59,10 @@
 int do_ext2ls (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 {
 	char *filename = "/";
-	int dev=0;
-	int part=1;
+	int dev = 0;
+	int part = 1;
 	char *ep;
-	block_dev_desc_t *dev_desc=NULL;
+	block_dev_desc_t *dev_desc = NULL;
 	int part_length;
 
 	if (argc < 3) {
@@ -115,36 +115,36 @@ int do_ext2ls (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	return(0);
 }
 
-
 /**********************************************************************
 Function   :check_ext2_usb
 Descriptor :
 Input      : part: partition
 Output     : none
-return     : 0:   success   
+return     : 0:   success
              1:   not ext2
              2:   ext2,but lost file
 Notice	   :
 **********************************************************************/
 extern int check_ext2_usb(int part)
 {
-    int  nfile;
-    char *filename_kernel = "vmlinux.ub";
-	char *filename_fs = "/root";  
-	
+	int  nfile;
+	char *filename_kernel = "vmlinux.ub";
+	char *filename_fs = "/root";
+
 	int dev=0;
-	block_dev_desc_t *dev_desc=NULL;
+	block_dev_desc_t *dev_desc = NULL;
 	int part_length;
 
 	dev_desc = get_dev("usb",0);  //first partition
 
-	if (dev_desc == NULL) 
+	if (dev_desc == NULL)
 	{
 		printf ("[error]: Block dev not supported\n");
 		return(1);
 	}
-    part_length = ext2fs_set_blk_dev(dev_desc, part);
-	if (part_length  == 0) 
+
+	part_length = ext2fs_set_blk_dev(dev_desc, part);
+	if (part_length == 0)
 	{
 		ext2fs_close();
 		return(1);
@@ -156,13 +156,14 @@ extern int check_ext2_usb(int part)
 		return(1);
 	}
 
-	if (ext2fs_find_dir(filename_fs)) 
+	if (ext2fs_find_dir(filename_fs))
 	{
 		printf("[error]:FileSystem not found %s ...\n",filename_fs);
 		ext2fs_close();
 		return(2);
 	}
-	if (ext2fs_open(filename_kernel) < 0) 
+
+	if (ext2fs_open(filename_kernel) < 0)
 	{
 		printf("[error]:Kernel not found %s ...\n", filename_kernel);
 		ext2fs_close();

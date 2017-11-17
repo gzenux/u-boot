@@ -71,7 +71,7 @@
  * Start addresses for the final memory configuration
  * Assume we run out of uncached memory for the moment
  */
-#define CFG_NAND_YAFFS_WRITE 
+#define CFG_NAND_YAFFS_WRITE
 
 #if defined(CFG_BOOT_FROM_SPI)		/* we are booting from SPI, so *DO* swap CSA and CSC with JE2 */
 #define CFG_EMI_SPI_BASE	0xA0000000	/* CSA: SPI Flash,  Physical 0x00000000 (64MiB) */
@@ -208,9 +208,9 @@
 #ifdef CONFIG_DRIVER_NET_STM_GMAC
 #	define CFG_STM_STMAC_BASE	0xfd110000ul	/* MAC = STM GMAC0 */
 //#	define CONFIG_STMAC_KSZ8041FTL			/* PHY = Micrel KSZ8041FTL */
-#     define CONFIG_CMD_MII
-#     define CONFIG_ETHADDR  DE:EA:FF:FF:01:01
-#     define CONFIG_STMAC_STE10XP  
+#	define CONFIG_CMD_MII
+#	define CONFIG_ETHADDR		DE:EA:FF:FF:01:01
+#	define CONFIG_STMAC_STE10XP
 
 #else
 #	undef CONFIG_CMD_NET		/* undefine if no networking at all */
@@ -246,12 +246,12 @@
 #	define CFG_USB_OHCI_REGS_BASE		(CFG_USB_BASE+0xffc00)
 
 /* JGONG 0427 MASK
-#   define USB_EXT_REGS		(CFG_USB0_BASE+0xffc00)
-#   define USB_INT_REGS		(CFG_USB1_BASE+0xffc00)
+#	define USB_EXT_REGS		(CFG_USB0_BASE+0xffc00)
+#	define USB_INT_REGS		(CFG_USB1_BASE+0xffc00)
 */
 
-#   define USB_EXT_REGS		(CFG_USB1_BASE+0xffc00)
-#   define USB_INT_REGS		(CFG_USB0_BASE+0xffc00)
+#	define USB_EXT_REGS		(CFG_USB1_BASE+0xffc00)
+#	define USB_INT_REGS		(CFG_USB0_BASE+0xffc00)
 
 
 #	define CFG_USB_OHCI_SLOT_NAME		"ohci"
@@ -437,7 +437,7 @@
  * Address, size, & location of U-boot's Environment Sector
  */
 
-#define CFG_ENV_SIZE			0x10000  /* 16 KiB of environment data */
+#define CFG_ENV_SIZE			0x10000	/* 64 KiB of environment data */
 
 #if 1 && defined(CONFIG_CMD_FLASH)		/* NOR flash present ? */
 #	define CFG_ENV_IS_IN_FLASH		/* environment in NOR flash */
@@ -452,7 +452,7 @@
 #	endif /* if CFG_ENV_SIZE < 0x20000 */
 #elif 1 && defined(CONFIG_SPI_FLASH)		/* SPI serial flash present ? */
 #	define CFG_ENV_IS_IN_EEPROM		/* ENV is stored in SPI Serial Flash */
-#	define CFG_ENV_OFFSET	      0x80000             //CFG_MONITOR_LEN	/* immediately after u-boot.bin */
+#	define CFG_ENV_OFFSET	0x80000		//CFG_MONITOR_LEN	/* immediately after u-boot.bin */
 #else
 #	define CFG_ENV_IS_NOWHERE		/* ENV is stored in volatile RAM */
 #endif	/* CONFIG_CMD_NAND */
@@ -464,15 +464,15 @@
 #if 1 && (defined(CONFIG_CMD_FLASH) || defined(CONFIG_CMD_NAND))
 #	define CONFIG_CMD_JFFS2			/* enable JFFS2 support */
 
-#define CONFIG_JFFS2_DEV		"nand0"
-#define CONFIG_JFFS2_PART_SIZE		0x6400000
-#define CONFIG_JFFS2_PART_OFFSET	0x9b00000
-#define CONFIG_JFFS2_LZO_LZARI
+#	define CONFIG_JFFS2_DEV		"nand0"
+#	define CONFIG_JFFS2_PART_SIZE	0x6400000
+#	define CONFIG_JFFS2_PART_OFFSET	0x9b00000
+#	define CONFIG_JFFS2_LZO_LZARI
 #endif
 
 #if defined(CONFIG_CMD_JFFS2)
 //#	define CONFIG_JFFS2_CMDLINE		/* mtdparts command line support */
-#undef  CONFIG_JFFS2_CMDLINE		/* mtdparts command line support */
+#	undef CONFIG_JFFS2_CMDLINE		/* no mtdparts command line support */
 #	define CONFIG_JFFS2_NAND	 1	/* JFFS2 support on NAND Flash */
 #	if defined(CONFIG_CMD_FLASH) && defined(CONFIG_CMD_NAND) /* Both NOR + NAND */
 #		define MTDPARTS_DEFAULT						\

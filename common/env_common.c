@@ -148,8 +148,7 @@ static uchar env_get_char_init (int index)
 	uchar c;
 
 	/* if crc was bad, use the default environment */
-	if (gd->env_valid)
-	{
+	if (gd->env_valid) {
 		c = env_get_char_spec(index);
 	} else {
 		c = default_environment[index];
@@ -224,6 +223,7 @@ void env_relocate (void)
 #if defined(CONFIG_GTH)	|| defined(CFG_ENV_IS_NOWHERE)	/* Environment not changable */
 		puts ("Using default environment\n\n");
 #else
+		//puts ("*** Warning - bad CRC, using default environment\n\n");
 		show_boot_progress (-60);
 #endif
 
@@ -264,9 +264,9 @@ int env_complete(char *var, int maxv, char *cmdv[], int bufsz, char *buf)
 
 	len = strlen(var);
 	/* now iterate over the variables and select those that match */
-	for (i=0; env_get_char(i) != '\0'; i=nxt+1) {
+	for (i = 0; env_get_char(i) != '\0'; i = nxt + 1) {
 
-		for (nxt=i; env_get_char(nxt) != '\0'; ++nxt)
+		for (nxt = i; env_get_char(nxt) != '\0'; ++nxt)
 			;
 
 		lval = (char *)env_get_addr(i);

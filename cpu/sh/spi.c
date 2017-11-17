@@ -400,9 +400,10 @@ static int spi_probe_serial_flash(
 	deviceName = "Atmel AT45DB321D";
 
 #elif defined(CONFIG_SPI_FLASH_ST)
- 
-       if (!((devid[1] == 0xefu) || (devid[1] == 0x20u))	||	 /* Manufacturer ID */
-	     !((devid[2] == 0x40u) || (devid[2] == 0x20u))	||	 /* Memory Type */
+
+	if (
+		!((devid[1] == 0xefu) || (devid[1] == 0x20u))	||	/* Manufacturer ID */
+		!((devid[2] == 0x40u) || (devid[2] == 0x20u))	||	/* Memory Type */
 		(				/* Memory Capacity */
 			(devid[3] != 0x14u) &&	/* M25P80 */
 			(devid[3] != 0x15u) &&	/* M25P16 */
@@ -587,7 +588,7 @@ extern void spi_init(void)
 	reg = ssc_read( SSC_CON);
 	reg |= SSC_CON_SR;		/* enable software reset */
 	ssc_write( SSC_CON, reg);
-	udelay(1);			    /* let reset propagate */
+	udelay(1);			/* let reset propagate */
 	reg = ssc_read( SSC_CON);
 	reg &= ~SSC_CON_SR;		/* disable software reset */
 	ssc_write( SSC_CON, reg);
@@ -915,7 +916,6 @@ extern ssize_t spi_write (
 	unsigned written = 0;		/* amount written between two dots */
 	spi_chipsel_type const chipsel = spi_chipsel[0];	/* SPI Device #0 */
 
-
 	if (len < 1) return len;
 	if (last >= deviceSize)	/* Out of range ? */
 	{
@@ -948,6 +948,7 @@ extern ssize_t spi_write (
 
 		/* a whole erase block */
 		my_spi_write(chipsel, ptr, buffer, eraseSize);
+
 		sector++;
 		ptr += eraseSize;
 		buffer += eraseSize;
